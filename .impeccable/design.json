@@ -1,0 +1,265 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-29T08:01:30.218Z",
+  "title": "Design System: BonusTrack",
+  "extensions": {
+    "colorMeta": {
+      "accent": {
+        "role": "primary",
+        "displayName": "松綠強調",
+        "tonalRamp": [
+          "oklch(15% .015 171.7)",
+          "oklch(25% .015 171.7)",
+          "oklch(35% .04 171.7)",
+          "oklch(45% .04 171.7)",
+          "oklch(55% .04 171.7)",
+          "oklch(65% .04 171.7)",
+          "oklch(80% .015 171.7)",
+          "oklch(95% .015 171.7)"
+        ]
+      },
+      "accent-hover": {
+        "role": "primary",
+        "displayName": "深松綠",
+        "tonalRamp": [
+          "oklch(15% .015 167.5)",
+          "oklch(25% .015 167.5)",
+          "oklch(35% .04 167.5)",
+          "oklch(45% .04 167.5)",
+          "oklch(55% .04 167.5)",
+          "oklch(65% .04 167.5)",
+          "oklch(80% .015 167.5)",
+          "oklch(95% .015 167.5)"
+        ]
+      },
+      "bg": {
+        "role": "neutral",
+        "displayName": "淺灰綠背景",
+        "tonalRamp": [
+          "oklch(15% .015 145.5)",
+          "oklch(25% .015 145.5)",
+          "oklch(35% .04 145.5)",
+          "oklch(45% .04 145.5)",
+          "oklch(55% .04 145.5)",
+          "oklch(65% .04 145.5)",
+          "oklch(80% .015 145.5)",
+          "oklch(95% .015 145.5)"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "白色表面",
+        "tonalRamp": [
+          "oklch(15% .015 160.0)",
+          "oklch(25% .015 160.0)",
+          "oklch(35% .04 160.0)",
+          "oklch(45% .04 160.0)",
+          "oklch(55% .04 160.0)",
+          "oklch(65% .04 160.0)",
+          "oklch(80% .015 160.0)",
+          "oklch(95% .015 160.0)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "深墨綠文字",
+        "tonalRamp": [
+          "oklch(15% .015 168.4)",
+          "oklch(25% .015 168.4)",
+          "oklch(35% .04 168.4)",
+          "oklch(45% .04 168.4)",
+          "oklch(55% .04 168.4)",
+          "oklch(65% .04 168.4)",
+          "oklch(80% .015 168.4)",
+          "oklch(95% .015 168.4)"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "輔助綠灰文字",
+        "tonalRamp": [
+          "oklch(15% .015 164.0)",
+          "oklch(25% .015 164.0)",
+          "oklch(35% .04 164.0)",
+          "oklch(45% .04 164.0)",
+          "oklch(55% .04 164.0)",
+          "oklch(65% .04 164.0)",
+          "oklch(80% .015 164.0)",
+          "oklch(95% .015 164.0)"
+        ]
+      },
+      "tint": {
+        "role": "neutral",
+        "displayName": "淡綠提示底",
+        "tonalRamp": [
+          "oklch(15% .015 162.0)",
+          "oklch(25% .015 162.0)",
+          "oklch(35% .04 162.0)",
+          "oklch(45% .04 162.0)",
+          "oklch(55% .04 162.0)",
+          "oklch(65% .04 162.0)",
+          "oklch(80% .015 162.0)",
+          "oklch(95% .015 162.0)"
+        ]
+      },
+      "soft": {
+        "role": "neutral",
+        "displayName": "柔和計數底",
+        "tonalRamp": [
+          "oklch(15% .015 157.1)",
+          "oklch(25% .015 157.1)",
+          "oklch(35% .04 157.1)",
+          "oklch(45% .04 157.1)",
+          "oklch(55% .04 157.1)",
+          "oklch(65% .04 157.1)",
+          "oklch(80% .015 157.1)",
+          "oklch(95% .015 157.1)"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "綠灰分隔線",
+        "tonalRamp": [
+          "oklch(15% .015 153.7)",
+          "oklch(25% .015 153.7)",
+          "oklch(35% .04 153.7)",
+          "oklch(45% .04 153.7)",
+          "oklch(55% .04 153.7)",
+          "oklch(65% .04 153.7)",
+          "oklch(80% .015 153.7)",
+          "oklch(95% .015 153.7)"
+        ]
+      },
+      "danger": {
+        "role": "error",
+        "displayName": "陶紅錯誤文字",
+        "tonalRamp": [
+          "oklch(15% .015 32.6)",
+          "oklch(25% .015 32.6)",
+          "oklch(35% .04 32.6)",
+          "oklch(45% .04 32.6)",
+          "oklch(55% .04 32.6)",
+          "oklch(65% .04 32.6)",
+          "oklch(80% .015 32.6)",
+          "oklch(95% .015 32.6)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "headline": {
+        "displayName": "頁面標題",
+        "purpose": "手機為1.625rem；桌面採frontmatter值。"
+      },
+      "amount": {
+        "displayName": "剩餘額度",
+        "purpose": "使用等寬數字；手機為2.375rem。"
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "state-color",
+        "value": "160ms ease-out",
+        "purpose": "背景、文字與邊框顏色的狀態轉換；減少動態偏好會停用。"
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "mobile-max",
+        "value": "600px"
+      },
+      {
+        "name": "two-column-max",
+        "value": "1000px"
+      }
+    ],
+    "provenance": {
+      "sourceFiles": [
+        "src/tokens.css",
+        "src/style.css"
+      ],
+      "rasterSource": "scripts/generate-icons.mjs",
+      "tonalRamps": "Panel-only synthesized OKLCH ramps; they are not runtime tokens or additional UI colors."
+    }
+  },
+  "components": [
+    {
+      "name": "主要按鈕",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "完成目前表單或新增項目的主要動作。",
+      "html": "<button class=\"ds-primary\">儲存消費</button>",
+      "css": ".ds-primary{font:600 .9375rem/1.5 var(--font, sans-serif);display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:10px 20px;border:0;border-radius:var(--control-radius,8px);background:var(--accent,#16705a);color:var(--surface,#fff);cursor:pointer;transition:background-color 160ms ease-out,color 160ms ease-out}.ds-primary:hover{background:var(--accent-hover,#105943)}.ds-primary:active{background:#0a4938}.ds-primary:focus-visible{outline:3px solid var(--accent,#16705a);outline-offset:4px}.ds-primary:disabled{opacity:.6;cursor:not-allowed}"
+    },
+    {
+      "name": "次要按鈕",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "編輯、備份等次要動作。",
+      "html": "<button class=\"ds-secondary\">編輯卡片</button>",
+      "css": ".ds-secondary{font:600 .9375rem/1.5 var(--font,sans-serif);min-height:48px;padding:10px 20px;border:1px solid var(--line,#dce4de);border-radius:var(--control-radius,8px);background:var(--surface,#fff);color:var(--ink,#20382f);cursor:pointer}.ds-secondary:hover{background:var(--tint,#eaf3ee)}.ds-secondary:focus-visible{outline:3px solid var(--accent,#16705a);outline-offset:4px}.ds-secondary:disabled{opacity:.6;cursor:not-allowed}"
+    },
+    {
+      "name": "文字動作",
+      "kind": "button",
+      "description": "活動管理、清單工具列等低權重動作。",
+      "html": "<button class=\"ds-text\">查看已封存卡片</button>",
+      "css": ".ds-text{font:550 .875rem/1.6 var(--font,sans-serif);min-height:44px;padding:6px 8px;border:0;border-radius:6px;background:transparent;color:var(--accent,#16705a);cursor:pointer}.ds-text:hover{background:var(--tint,#eaf3ee)}.ds-text:focus-visible{outline:3px solid var(--accent,#16705a);outline-offset:4px}.ds-text:disabled{opacity:.6;cursor:not-allowed}"
+    },
+    {
+      "name": "文字輸入框",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "清楚的文字標籤與至少48px高的輸入區。",
+      "html": "<label class=\"ds-field\">卡片名稱<input placeholder=\"例如：玉山熊本熊卡\" /></label>",
+      "css": ".ds-field{display:flex;flex-direction:column;gap:9px;color:var(--ink,#20382f);font:550 .875rem/1.6 var(--font,sans-serif)}.ds-field input{min-width:0;min-height:48px;padding:11px 13px;border:1px solid #c4cfc9;border-radius:var(--control-radius,8px);background:var(--surface,#fff);color:var(--ink,#20382f);font:400 1rem/1.6 var(--font,sans-serif);caret-color:var(--accent,#16705a)}.ds-field input::placeholder{color:#6f7c75}.ds-field input:focus-visible{outline:3px solid var(--accent,#16705a);outline-offset:4px}.ds-field input:disabled{background:var(--bg,#f5f7f5);color:var(--muted,#607068)}"
+    },
+    {
+      "name": "頂部導覽",
+      "kind": "nav",
+      "description": "品牌與備份入口，允許放大文字時換行。",
+      "html": "<nav class=\"ds-nav\" aria-label=\"主要導覽\"><a class=\"ds-brand\" href=\"#\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 8h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2Zm2-4h14a2 2 0 0 1 2 2v8M2 12h18M6 16h3\"/></svg>BonusTrack</a><a class=\"ds-nav-link\" href=\"#\">資料與備份</a></nav>",
+      "css": ".ds-nav{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;min-height:88px;padding:12px 32px;background:var(--surface,#fff);border-bottom:1px solid var(--line,#dce4de);font-family:var(--font,sans-serif)}.ds-brand{display:flex;align-items:center;gap:11px;min-height:44px;color:var(--ink,#20382f);font-size:1.25rem;font-weight:750;letter-spacing:-.035em;text-decoration:none}.ds-brand svg{color:var(--accent,#16705a)}.ds-nav-link{display:flex;align-items:center;min-height:44px;padding:0 8px;border-radius:6px;color:var(--muted,#607068);font-size:.875rem;text-decoration:none}.ds-nav-link:hover{background:var(--tint,#eaf3ee);color:var(--accent,#16705a)}.ds-nav a:focus-visible{outline:3px solid var(--accent,#16705a);outline-offset:4px}"
+    },
+    {
+      "name": "加碼比例標籤",
+      "kind": "chip",
+      "refersTo": "rate-tag",
+      "description": "非互動資料標記，不使用按鈕語意。",
+      "html": "<span class=\"ds-rate\">+6%</span>",
+      "css": ".ds-rate{display:inline-block;padding:1px 7px;border-radius:4px;background:var(--tint,#eaf3ee);color:var(--accent,#16705a);font:400 .75rem/1.6 var(--font,sans-serif);white-space:nowrap}"
+    },
+    {
+      "name": "額度卡片",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "以大字剩餘額度與次要上限呈現一個加碼活動。預覽數值僅示意。",
+      "html": "<a class=\"ds-card\" href=\"#\"><h3>日本指定商店</h3><span class=\"ds-label\">剩餘可刷</span><div class=\"ds-amount\"><span>NT$</span> 8,233</div><p>本期上限 NT$ 8,333</p></a>",
+      "css": ".ds-card{display:block;min-width:0;padding:24px;border:1px solid var(--line,#dce4de);border-radius:var(--radius,14px);background:var(--surface,#fff);color:var(--ink,#20382f);font-family:var(--font,sans-serif);text-decoration:none;transition:border-color 160ms ease-out}.ds-card:hover{border-color:var(--accent,#16705a)}.ds-card:focus-visible{outline:3px solid var(--accent,#16705a);outline-offset:4px}.ds-card h3{margin:0 0 17px;font-size:1rem;font-weight:650;overflow-wrap:anywhere}.ds-label{color:var(--muted,#607068);font-size:.8125rem}.ds-amount{margin-top:4px;font-size:2.25rem;font-weight:650;line-height:1.25;letter-spacing:-.035em;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.ds-amount>span{color:var(--muted,#607068);font-size:.875rem;font-weight:500;letter-spacing:0}.ds-card p{margin:10px 0 0;color:var(--muted,#607068);font-size:.75rem}"
+    }
+  ],
+  "narrative": {
+    "overview": "這是一套供人完成任務的 Operate 介面。使用者已指定簡約、淺色背景、深色文字、單一強調色與手機優先 RWD；視覺以讀取與輸入的清楚程度為準，不增加行銷式大圖或裝飾性圖表。\n\n介面以平面的白色內容表面和淺灰綠底區分層次。綠色用於主要動作、可操作文字與狀態，留白與字級負責資訊分組。這份文件記錄 src/tokens.css、src/style.css 與實際桌面／手機畫面中的系統；頁面組成與操作流程另見 PRODUCT.md 和 .impeccable/surfaces/src-app-vue.md。",
+    "keyCharacteristics": [
+      "固定字級與等寬數字，方便掃讀金額。",
+      "白底、細描邊、圓角容器，沒有陰影堆疊。",
+      "統一描線 SVG 圖示，文字仍清楚說明動作。",
+      "手機單欄、寬畫面多欄，長內容可換行。",
+      "文字與顏色一起表達錯誤、用完與離線狀態。"
+    ],
+    "rules": [],
+    "dos": [
+      "Do 使用淺色背景、深色文字與單一綠色強調，讓狀態色保有語意。",
+      "Do 以字級、對齊、留白和等寬數字強調剩餘可刷金額。",
+      "Do 讓長卡名、活動名稱與放大文字換行，保留重要控制項。",
+      "Do 保留可見鍵盤焦點、文字標籤與非純顏色狀態提示。",
+      "Do 在手機底部動作中處理安全區，並以實際捲動檢查內容是否可達。"
+    ],
+    "donts": [
+      "Don't 增加裝飾性行銷區塊、大圖、漸層或回饋金圖表。",
+      "Don't 以陰影、光暈或進場動畫取代清楚的分組與狀態。",
+      "Don't 引入外部字型或 CDN，破壞已完成快取後的離線使用。",
+      "Don't 把單張畫面的流程或截圖中 sticky 元素的位置當成全域設計 token。"
+    ]
+  }
+}

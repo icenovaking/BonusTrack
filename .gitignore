@@ -1,2 +1,8 @@
 .spectra/
 docs/spectra/.vector-search.db*
+node_modules/
+dist/
+playwright-report/
+test-results/
+.impeccable/mocks/
+.impeccable/config.local.json

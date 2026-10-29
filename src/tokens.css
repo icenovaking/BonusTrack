@@ -1,0 +1,15 @@
+:root {
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans TC', sans-serif;
+  --bg: #f5f7f5;
+  --surface: #ffffff;
+  --ink: #20382f;
+  --muted: #607068;
+  --accent: #16705a;
+  --accent-hover: #105943;
+  --tint: #eaf3ee;
+  --soft: #e8eeea;
+  --line: #dce4de;
+  --danger: #9b4231;
+  --radius: 14px;
+  --control-radius: 8px;
+}
