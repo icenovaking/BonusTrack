@@ -36,6 +36,16 @@ npm run dev
 
 本次驗證結果及限制見 [活動備註驗證紀錄](docs/verification/add-activity-notes.md)。
 
+## GitHub Pages 部署
+
+1. 在 GitHub repository 的 Settings → Pages，將 Build and deployment → Source 設為 **GitHub Actions**。
+2. 將變更推送至 `main`；`.github/workflows/deploy.yml` 會安裝相依套件、建置，並只發布 `dist/`。亦可在 Actions 手動執行該 workflow。
+3. workflow 成功後，開啟 `https://icenovaking.github.io/BonusTrack/`。
+
+部署建置使用 `npm run build -- --base=/BonusTrack/`，讓資源路徑指向專案子目錄。本機建置仍維持相對路徑；若更改 repository 名稱，需同步更新 workflow 的 `--base`。
+
+不要將原始碼根目錄直接設為 Pages 發布來源：原始 `index.html` 的 `/src/main.ts` 是 Vite 開發入口，正式網站必須使用 `dist/index.html` 及其 `assets/` 建置產物。部署後可在 Network 確認載入 `/BonusTrack/assets/*.js`，不應再請求 `/src/main.ts`。
+
 ## 離線與手機安裝
 
 ```powershell
