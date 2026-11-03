@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-29T08:01:30.218Z",
+  "generatedAt": "2026-11-03T08:52:08.928Z",
   "title": "Design System: BonusTrack",
   "extensions": {
     "colorMeta": {
@@ -175,8 +175,11 @@
     ],
     "provenance": {
       "sourceFiles": [
+        "DESIGN.md",
         "src/tokens.css",
-        "src/style.css"
+        "src/style.css",
+        "src/components/Icon.vue",
+        "src/views/Home.vue"
       ],
       "rasterSource": "scripts/generate-icons.mjs",
       "tonalRamps": "Panel-only synthesized OKLCH ramps; they are not runtime tokens or additional UI colors."
@@ -189,7 +192,7 @@
       "refersTo": "button-primary",
       "description": "完成目前表單或新增項目的主要動作。",
       "html": "<button class=\"ds-primary\">儲存消費</button>",
-      "css": ".ds-primary{font:600 .9375rem/1.5 var(--font, sans-serif);display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:10px 20px;border:0;border-radius:var(--control-radius,8px);background:var(--accent,#16705a);color:var(--surface,#fff);cursor:pointer;transition:background-color 160ms ease-out,color 160ms ease-out}.ds-primary:hover{background:var(--accent-hover,#105943)}.ds-primary:active{background:#0a4938}.ds-primary:focus-visible{outline:3px solid var(--accent,#16705a);outline-offset:4px}.ds-primary:disabled{opacity:.6;cursor:not-allowed}"
+      "css": ".ds-primary{font:600 .9375rem/1.5 var(--font, sans-serif);display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:10px 20px;border:0;border-radius:var(--control-radius,8px);background:var(--accent,#16705a);color:var(--surface,#fff);cursor:pointer;transition:background-color 160ms ease-out,color 160ms ease-out}.ds-primary:hover:not(:disabled){background:var(--accent-hover,#105943)}.ds-primary:active:not(:disabled){background:#0a4938}.ds-primary:focus-visible{outline:3px solid var(--accent,#16705a);outline-offset:4px}.ds-primary:disabled{opacity:.6;cursor:not-allowed}"
     },
     {
       "name": "次要按鈕",
@@ -218,8 +221,8 @@
       "name": "頂部導覽",
       "kind": "nav",
       "description": "品牌與備份入口，允許放大文字時換行。",
-      "html": "<nav class=\"ds-nav\" aria-label=\"主要導覽\"><a class=\"ds-brand\" href=\"#\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 8h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2Zm2-4h14a2 2 0 0 1 2 2v8M2 12h18M6 16h3\"/></svg>BonusTrack</a><a class=\"ds-nav-link\" href=\"#\">資料與備份</a></nav>",
-      "css": ".ds-nav{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;min-height:88px;padding:12px 32px;background:var(--surface,#fff);border-bottom:1px solid var(--line,#dce4de);font-family:var(--font,sans-serif)}.ds-brand{display:flex;align-items:center;gap:11px;min-height:44px;color:var(--ink,#20382f);font-size:1.25rem;font-weight:750;letter-spacing:-.035em;text-decoration:none}.ds-brand svg{color:var(--accent,#16705a)}.ds-nav-link{display:flex;align-items:center;min-height:44px;padding:0 8px;border-radius:6px;color:var(--muted,#607068);font-size:.875rem;text-decoration:none}.ds-nav-link:hover{background:var(--tint,#eaf3ee);color:var(--accent,#16705a)}.ds-nav a:focus-visible{outline:3px solid var(--accent,#16705a);outline-offset:4px}"
+      "html": "<nav class=\"ds-nav\" aria-label=\"主要導覽\"><a class=\"ds-brand\" href=\"#\"><span class=\"ds-brand-mark\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 8h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2Zm2-4h14a2 2 0 0 1 2 2v8M2 12h18M6 16h3\" /></svg></span>BonusTrack</a><a class=\"ds-nav-link\" href=\"#\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 6h16M4 12h16M4 18h16M8 4v4M16 10v4M10 16v4\" /></svg>資料與備份</a></nav>",
+      "css": ".ds-nav{box-sizing:border-box;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;min-height:88px;padding:12px 32px;background:var(--surface,#fff);border-bottom:1px solid var(--line,#dce4de);font-family:var(--font,sans-serif);line-height:1.6}.ds-brand{display:flex;align-items:center;gap:11px;min-height:44px;color:var(--ink,#20382f);font-size:1.25rem;font-weight:750;letter-spacing:-.035em;text-decoration:none}.ds-brand-mark{width:36px;height:36px;display:grid;place-items:center;background:var(--accent,#16705a);color:white;border-radius:10px}.ds-nav svg{flex-shrink:0;vertical-align:middle}.ds-nav-link{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 8px;border-radius:6px;color:var(--muted,#607068);font-size:.875rem;text-decoration:none}.ds-nav-link:hover{background:var(--tint,#eaf3ee);color:var(--accent,#16705a)}.ds-nav a:focus-visible{outline:3px solid var(--accent,#16705a);outline-offset:4px}@media(max-width:600px){.ds-nav{min-height:72px;padding:0 20px}.ds-brand{font-size:1.125rem;gap:8px}.ds-brand-mark{width:32px;height:32px;border-radius:8px}.ds-nav-link{font-size:.8125rem;gap:6px;padding-inline:0}}"
     },
     {
       "name": "加碼比例標籤",
@@ -233,9 +236,16 @@
       "name": "額度卡片",
       "kind": "card",
       "refersTo": "card",
-      "description": "以大字剩餘額度與次要上限呈現一個加碼活動。預覽數值僅示意。",
-      "html": "<a class=\"ds-card\" href=\"#\"><h3>日本指定商店</h3><span class=\"ds-label\">剩餘可刷</span><div class=\"ds-amount\"><span>NT$</span> 8,233</div><p>本期上限 NT$ 8,333</p></a>",
-      "css": ".ds-card{display:block;min-width:0;padding:24px;border:1px solid var(--line,#dce4de);border-radius:var(--radius,14px);background:var(--surface,#fff);color:var(--ink,#20382f);font-family:var(--font,sans-serif);text-decoration:none;transition:border-color 160ms ease-out}.ds-card:hover{border-color:var(--accent,#16705a)}.ds-card:focus-visible{outline:3px solid var(--accent,#16705a);outline-offset:4px}.ds-card h3{margin:0 0 17px;font-size:1rem;font-weight:650;overflow-wrap:anywhere}.ds-label{color:var(--muted,#607068);font-size:.8125rem}.ds-amount{margin-top:4px;font-size:2.25rem;font-weight:650;line-height:1.25;letter-spacing:-.035em;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.ds-amount>span{color:var(--muted,#607068);font-size:.875rem;font-weight:500;letter-spacing:0}.ds-card p{margin:10px 0 0;color:var(--muted,#607068);font-size:.75rem}"
+      "description": "卡片名稱、期別、活動備註與剩餘額度依序呈現。預覽數值及文字僅示意。",
+      "html": "<a class=\"ds-card\" href=\"#\"><h2>日常消費卡</h2><p class=\"ds-period\">本期</p><div class=\"ds-activity\"><div class=\"ds-activity-name\">指定通路加碼<span class=\"ds-card-rate\">+6%</span></div><p class=\"ds-note\">需先登錄\n限指定通路</p><span class=\"ds-label\">剩餘可刷</span><div class=\"ds-amount\"><span>NT$</span> 8,233</div><p class=\"ds-limit\">本期上限 NT$ 8,333</p></div></a>",
+      "css": ".ds-card{display:block;min-width:0;padding:24px;border:1px solid var(--line,#dce4de);border-radius:var(--radius,14px);background:var(--surface,#fff);color:var(--ink,#20382f);font-family:var(--font,sans-serif);line-height:1.6;text-decoration:none;transition:border-color 160ms ease-out}.ds-card:hover{border-color:var(--accent,#16705a)}.ds-card:focus-visible{outline:3px solid var(--accent,#16705a);outline-offset:4px}.ds-card h2{margin:0;font-size:1.0625rem;font-weight:650;line-height:1.5;overflow-wrap:anywhere}.ds-period{margin:16px 0 0;color:var(--muted,#607068);font-size:.75rem}.ds-activity{margin-top:20px;padding-top:20px;border-top:1px solid var(--line,#dce4de)}.ds-activity-name{display:flex;align-items:start;justify-content:space-between;gap:12px;font-size:.875rem;margin-bottom:17px;overflow-wrap:anywhere}.ds-card-rate{color:var(--accent,#16705a);background:var(--tint,#eaf3ee);padding:1px 7px;border-radius:4px;font-size:.75rem;white-space:nowrap}.ds-card .ds-note{margin:-8px 0 17px;color:var(--muted,#607068);font-size:.8125rem;white-space:pre-wrap;overflow-wrap:anywhere}.ds-label{color:var(--muted,#607068);font-size:.8125rem}.ds-amount{margin-top:4px;font-size:2.25rem;font-weight:650;line-height:1.25;letter-spacing:-.035em;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.ds-amount>span{color:var(--muted,#607068);font-size:.875rem;font-weight:500;letter-spacing:0}.ds-card .ds-limit{margin:10px 0 0;color:var(--muted,#607068);font-size:.75rem}@media(max-width:600px){.ds-card{padding:22px}.ds-amount{font-size:2.375rem}}@media(prefers-reduced-motion:reduce){.ds-card{transition:none}}"
+    },
+    {
+      "name": "精簡空白狀態",
+      "kind": "custom",
+      "description": "首頁使用中清單為空的局部變體；保留錢包圖示與單一新增入口，不沿用為封存或其他空白狀態的預設。",
+      "html": "<div class=\"ds-empty\"><span class=\"ds-empty-icon\"><svg width=\"28\" height=\"28\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M20 8V5a2 2 0 0 0-2-2H6a3 3 0 0 0 0 6h14v12H6a3 3 0 0 1-3-3V6m17 7h-5v4h5\" /></svg></span><a class=\"ds-empty-action\" href=\"#\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 5v14M5 12h14\" /></svg>新增卡片</a></div>",
+      "css": ".ds-empty{padding:32px 24px;text-align:center;border:1px dashed #bac9c2;border-radius:var(--radius,14px);background:#fafcfb;font-family:var(--font,sans-serif);line-height:1.6}.ds-empty-icon{display:grid;place-items:center;width:60px;height:60px;margin:0 auto 24px;background:var(--tint,#eaf3ee);color:var(--accent,#16705a);border-radius:16px}.ds-empty svg{flex-shrink:0;vertical-align:middle}.ds-empty-action{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:10px 20px;border-radius:var(--control-radius,8px);font-size:.9375rem;font-weight:600;line-height:1.5;text-align:center;background:var(--accent,#16705a);color:white;text-decoration:none;transition:background-color 160ms ease-out,color 160ms ease-out}.ds-empty-action:hover{background:var(--accent-hover,#105943)}.ds-empty-action:active{background:#0a4938}.ds-empty-action:focus-visible{outline:3px solid var(--accent,#16705a);outline-offset:4px}@media(max-width:600px){.ds-empty{padding-inline:20px}}@media(prefers-reduced-motion:reduce){.ds-empty-action{transition:none}}"
     }
   ],
   "narrative": {

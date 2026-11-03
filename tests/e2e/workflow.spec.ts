@@ -6,7 +6,7 @@ const activityName = '日本指定商店'
 test.beforeEach(async ({ page }) => {
   await page.clock.install({ time: new Date('2026-10-29T12:00:00+08:00') })
   await page.goto('/')
-  await expect(page.getByRole('heading', { name: '我的卡片', exact: true })).toBeVisible()
+  await expect(page.getByRole('heading', { name: '活動加碼追蹤', exact: true })).toBeVisible()
 })
 
 async function addActivity(page: Page, name: string, cap = '500', rate = '6') {

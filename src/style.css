@@ -67,6 +67,7 @@ textarea { resize: vertical; }
 .site-footer { max-width: 1104px; margin: auto; padding: 24px 0 32px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: .75rem; }
 .site-footer > :first-child { font-weight: 650; }
 .empty-state { padding: 64px 24px; text-align: center; border: 1px dashed #bac9c2; border-radius: var(--radius); background: #fafcfb; }
+.empty-state.home-empty-active { padding-block: 32px; }
 .empty-icon { display: grid; place-items: center; width: 60px; height: 60px; margin: 0 auto 24px; background: var(--tint); color: var(--accent); border-radius: 16px; }
 .empty-icon svg { width: 28px; height: 28px; }
 .empty-state p { color: var(--muted); margin: 12px auto 24px; max-width: 40ch; }
