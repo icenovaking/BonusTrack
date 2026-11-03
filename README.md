@@ -6,7 +6,11 @@ Vue + TypeScript + Vite 純前端，資料保存在 IndexedDB，沒有後端、�
 
 ## 開始使用
 
-使用符合 Vite 要求的 Node.js（22.12 以上）與 npm；相依版本由 package-lock.json 鎖定。TypeScript 固定於 5.9 系列，以配合目前 vue-tsc。
+一般使用者直接開啟 Cloudflare Pages 專案的正式網址（首次部署後由 Cloudflare 提供 `https://專案名稱.pages.dev`），不需要安裝 Node.js、建立帳號或輸入 API key。首次請保持連線；網站若仍顯示空白，先依下方「部署排錯」確認發布結果。此 repository 不再透過 GitHub Pages 發布。
+
+以下指令供修改程式或本機預覽使用：
+
+使用 Node.js 24 與 npm；根目錄 `.node-version` 指定 Cloudflare Pages 的建置版本，相依版本由 package-lock.json 鎖定。TypeScript 固定於 5.9 系列，以配合目前 vue-tsc。
 
 ```powershell
 npm ci
@@ -36,15 +40,57 @@ npm run dev
 
 本次驗證結果及限制見 [活動備註驗證紀錄](docs/verification/add-activity-notes.md)。
 
-## GitHub Pages 部署
+## Cloudflare Pages 部署
 
-1. 在 GitHub repository 的 Settings → Pages，將 Build and deployment → Source 設為 **GitHub Actions**。
-2. 將變更推送至 `main`；`.github/workflows/deploy.yml` 會安裝相依套件、建置，並只發布 `dist/`。亦可在 Actions 手動執行該 workflow。
-3. workflow 成功後，開啟 `https://icenovaking.github.io/BonusTrack/`。
+保留 Vue + TypeScript，使用 **Cloudflare Pages Git 整合**連接 GitHub 私有 repository。日常只需提交原始碼、推送 `main`，Cloudflare 就會自動建置、發布，不必在本機建置、不必提交 `dist/`，也不需要 GitHub Actions workflow。
 
-部署建置使用 `npm run build -- --base=/BonusTrack/`，讓資源路徑指向專案子目錄。本機建置仍維持相對路徑；若更改 repository 名稱，需同步更新 workflow 的 `--base`。
+1. 搬站前，先從舊網站的「資料與備份」匯出 JSON。每個裝置／瀏覽器分別保存各自的備份；換網址後資料不會自動搬移。
+2. 在 GitHub repository 的 Settings → General → Danger Zone，將 visibility 改為 Private（如尚未變更）。Private 不會收回先前公開下載或 fork 的內容。
+3. 將這次部署修改提交、推送到 `main`。移除舊的 GitHub Pages workflow，並在 GitHub Settings → Pages 停用舊站（如仍發布中）。
+4. 登入 Cloudflare → Workers & Pages → Create application → Pages → Import an existing Git repository。使用 **Git 整合**，不是 Direct Upload 或 Worker 專案。
+5. 連接 GitHub，授權 Cloudflare GitHub App 存取 BonusTrack；建議只授權這個 repository。若找不到私有 repo，到 GitHub Settings → Applications → Installed GitHub Apps 檢查授權。
+6. 使用下表設定並部署。成功後，開啟 Cloudflare 提供的正式網址；若需自訂網域，建議先設定最終網域，再開始正式記帳。
 
-不要將原始碼根目錄直接設為 Pages 發布來源：原始 `index.html` 的 `/src/main.ts` 是 Vite 開發入口，正式網站必須使用 `dist/index.html` 及其 `assets/` 建置產物。部署後可在 Network 確認載入 `/BonusTrack/assets/*.js`，不應再請求 `/src/main.ts`。
+| Cloudflare 設定 | 值 |
+| --- | --- |
+| Production branch | `main` |
+| Framework preset | Vue；若未列出可手動填寫以下設定 |
+| Build command | `npm run build` |
+| Build output directory | `dist` |
+| Root directory | 留空，使用 repository 根目錄 |
+| Node.js | 根目錄 `.node-version` 指定 `24`；若後台已有 `NODE_VERSION`，請移除舊值或同樣設為 `24`，Production／Preview 皆適用 |
+
+Cloudflare 會安裝相依套件，執行 TypeScript 檢查與 Vite 建置，再發布 `dist/`。不需要建立 PAT、Cloudflare API token、Wrangler 設定或後端資料庫。請勿將 `NODE_ENV` 設為 `production` 導致略過建置需要的 devDependencies。
+
+`vite.config.ts` 使用 `base: '/'`，對應 Pages 或自訂網域的根目錄。部署後 Network 應載入 `/assets/*.js`，不應再請求 `/src/main.ts` 或 `/BonusTrack/assets/`。目前使用 hash 路由，不需要新增 `_redirects`。`public/_headers` 會複製到 `dist/_headers`，由 Cloudflare 對 Service Worker 與 manifest 設定 `Cache-Control: no-cache`，讓更新時重新驗證檔案。
+
+Private repo 只限制原始碼 repository 的存取，不會把網站變成私人網站；正式網站與前端 JavaScript 仍可公開下載，Preview URL 預設也公開。如需限制訪客，另行設定 Cloudflare Access；只開啟 Preview 的存取保護，不會同時保護正式網址。
+
+官方參考：[Vue 部署](https://developers.cloudflare.com/pages/framework-guides/deploy-a-vue-site/)、[GitHub 整合](https://developers.cloudflare.com/pages/configuration/git-integration/github-integration/)、[建置環境](https://developers.cloudflare.com/pages/configuration/build-image/)、[HTTP headers](https://developers.cloudflare.com/pages/configuration/headers/)。
+
+### 日常更新網站
+
+在 `main` 完成修改後，先確認本次檔案，再提交並推送：
+
+```powershell
+git status --short
+git diff
+# 本次部署設定的提交範例；之後改成各次實際修改的檔案。
+git add -A -- .github/workflows/deploy.yml .gitignore README.md package.json vite.config.ts .node-version public/_headers
+git diff --staged
+git diff --staged --check
+git commit -m "fix: 說明本次修正"
+git push origin main
+```
+
+接著開啟 Cloudflare → Workers & Pages → 本專案 → Deployments，確認對應 commit 的 Production 部署成功。推送只會觸發部署，不能單憑推送成功判斷網站已更新；未推送的本機變更不會在線上生效。首次設定須先移除舊 workflow 並提交新設定；後續依各次修改選取檔案，不必再加入已刪除的 workflow 路徑。
+
+### 部署排錯
+
+- **找不到私有 repo 或推送未觸發部署**：檢查 Cloudflare GitHub App 是否可存取該 repo，以及 Production branch 是否為 `main`、自動部署是否啟用。
+- **安裝、型別檢查或建置失敗**：查看 Cloudflare Deployments 的 Build log，確認 Node 24、build command 為 `npm run build`，且 devDependencies 有安裝。修正後重新推送或重試部署；不要把 PAT 或 API key 貼進程式、log 或 issue。
+- **部署成功但網站仍空白**：確認是最新 commit 的正式網址；output directory 必須是 `dist`，不能是 `src` 或 repository 根目錄。Network 應載入 `/assets/*.js`；若仍請求 `/src/main.ts` 或 `/BonusTrack/assets/`，請檢查建置指令與發布目錄，再重新部署。
+- **舊版 PWA 尚未更新**：先儲存表單，再接受應用程式的更新提示。排錯前先匯出備份，不要直接清除網站資料；清除 IndexedDB 會刪除記帳紀錄。
 
 ## 離線與手機安裝
 
@@ -69,6 +115,27 @@ npm run preview
 - 還原時選擇 JSON，先檢查驗證結果與筆數，再確認取代全部資料。匯入是完整取代，並非合併；建議先匯出目前版本。
 - 格式或版本不符、取消、寫入失敗時，原資料保持不變。重複匯入同一份資料不會加倍消費。
 - 不需輸入卡號、有效期限或安全碼。
+- 備份是未加密的 JSON，包含卡片名稱、活動、消費金額、日期及備註；請保存到受保護的位置，不要加入公開 repo、issue 或截圖。只匯入可信任的自有備份；目前沒有檔案大小上限，過大的 JSON 可能使頁面暫時無回應。
+- 從 GitHub Pages 搬到 Cloudflare，或從 `pages.dev` 換成自訂網域時，請在舊網址匯出、新網址匯入，再確認筆數、金額與備註。IndexedDB 不會跨 origin 自動搬移；每個 Preview URL 也有各自的儲存空間。確認新站資料完整後，再從新網址重新安裝 PWA，勿先清除舊站資料。
+
+## 公開 repo 資安檢查（2026-11-03）
+
+以下為切換 Cloudflare 前的檢查快照：常見密鑰格式掃描未命中 API key、GitHub token、私鑰、AWS access key 或含帳密網址。範圍為當時可見的 3 個 commit／80 個歷史文字檔版本、79 個工作目錄文字檔及 8 個建置文字檔。這是靜態格式掃描，不是完整滲透測試；未涵蓋圖片 OCR、不可達 Git 物件、其他分支／fork 的未知歷史、GitHub Secrets 內容或所有歷史 Actions log，也無法辨認所有自訂格式的密鑰。
+
+| 項目 | 檢查結果與建議 |
+| --- | --- |
+| 公開作者資訊 | `b7b9e92`、`7b157ed` 的作者資訊含工作信箱／電腦帳號，其他 commit 也有作者信箱。這不是 API key，但屬公開個人資訊；未來可使用 GitHub Settings → Emails 提供的 noreply 信箱設定 `git config user.email`。改設定不會移除既有歷史，本次未重寫或強制推送歷史。 |
+| 本機路徑與 hooks | `.codex/hooks.json`、`.github/hooks/impeccable.json` 包含本機使用者路徑，會公開帳號名稱；設定會嘗試執行本機 impeccable hook，該外部腳本不在本次檢查範圍。它們不是網站執行程式或 API key。 |
+| 建置依賴 | 完整 `npm audit` 回報 10 個受影響套件項目（2 low、8 moderate，含間接影響），集中於 `vite-plugin-pwa → workbox-build` 依賴鏈。`npm audit --omit=dev` 回報零項，但不代表所有建置產物或供應鏈都沒有風險。尚未修復；未套用會降級 PWA 套件的 `npm audit fix --force`。 |
+| 資料與匯入 | 記帳資料存於未做應用層加密的 IndexedDB；匯出 JSON 也未加密。未找到應用程式上傳記帳資料的網路呼叫，也未找到 `v-html`、`innerHTML` 或 `eval` 使用；目前文字以 Vue 插值顯示。備份格式有驗證，但匯入沒有大小限制。 |
+| 同網域隔離 | IndexedDB 以 origin（協定、主機、連接埠）隔離，不以路徑隔離。舊站與同為 `https://icenovaking.github.io/` 的其他專案共用安全邊界；新站以實際 `pages.dev` 或自訂網域為界。換域可隔離舊站，但也必須透過備份搬移資料。 |
+| 部署身分 | 已移除 GitHub Pages workflow，改由 Cloudflare GitHub App 取得 repo 內容並在 Cloudflare 建置。不需在 repo 存放部署密鑰；仍須信任授權的 Cloudflare 帳號、GitHub App 與建置依賴。既有 Actions log 不會因移除 workflow 而被刪除。 |
+
+`.gitignore` 已涵蓋 `.env`、`.env.*`、常見私鑰／憑證副檔名與 `BonusTrack-*.json` 備份；已經追蹤的檔案不會因新增忽略規則而從 Git 歷史消失。`.env.example` 僅能放假值；其他檔名的備份或密鑰仍須自行確認。任何秘密都不應放入 `public/` 或 `VITE_*` 環境變數，因為公開檔案與前端建置內容可由使用者下載。
+
+日後重新檢查套件可執行 `npm audit` 與 `npm audit --omit=dev`。若發現真正的密鑰曾被提交，應先在發行端撤銷／輪替，再處理 repo 與 Git 歷史，僅刪除目前檔案無法收回已公開的密鑰。
+
+參考：[Vite 前端環境變數](https://vite.dev/guide/env-and-mode)、[IndexedDB 的同源限制](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Basic_Terminology)。本次 audit 的直接公告包括 [deepmerge](https://github.com/advisories/GHSA-gcqx-w48m-w2h4)、[glob](https://github.com/advisories/GHSA-3g3m-2fjr-6pw4) 與 [minimatch](https://github.com/advisories/GHSA-g3hv-75wg-m249)。
 
 ## 驗證
 
@@ -85,7 +152,7 @@ npm run test:e2e
 
 手機的實際加入主畫面、系統分享、軟鍵盤與瀏海安全區，尚未在 iOS／Android 實機驗證；桌面瀏覽器的 viewport 測試不代表實機通過。版本更新保護與安裝事件另有模擬測試，未進行線上兩版部署切換。
 
-開發依賴的 npm audit 偵測到 deepmerge 經 Workbox 引入的低風險問題及其連帶項目；production 依賴的 audit 為零。未執行會降級 PWA 套件的 npm audit fix --force。
+2026-11-03 的 npm audit 回報開發依賴 10 個受影響套件項目（2 low、8 moderate，包含間接影響），集中於 PWA／Workbox 建置依賴鏈；production 依賴的 audit 為零。未執行會降級 PWA 套件的 npm audit fix --force。此結果不是整體安全保證，應定期重新檢查。
 
 ## 設計與規格
 

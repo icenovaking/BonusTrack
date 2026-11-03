@@ -1,6 +1,14 @@
 .spectra/
 docs/spectra/.vector-search.db*
 node_modules/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+*.p12
+BonusTrack-*.json
 dist/
 playwright-report/
 test-results/
