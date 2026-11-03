@@ -97,7 +97,7 @@ test('archived cards leave the active list and remain accessible with their purc
   await page.clock.install({ time: new Date('2026-10-29T12:00:00+08:00') })
   await restore(page)
   await page.goto('/#/cards/coverage-card')
-  await page.getByText('管理這張卡片', { exact: true }).click()
+  await page.getByRole('link', { name: '卡片設定', exact: true }).click()
   page.once('dialog', dialog => dialog.accept())
   await page.getByRole('button', { name: '封存卡片', exact: true }).click()
   await expect(page.getByText('此卡已封存，歷史紀錄仍為你保留。', { exact: true })).toBeVisible()
