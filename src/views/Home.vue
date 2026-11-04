@@ -40,7 +40,6 @@ function remaining(card: Card, activity: Activity) {
           <span class="amount-label">剩餘可刷</span><div class="amount" :class="{ exhausted: remaining(card, activity) === 0 }"><span>NT$</span> {{ money(remaining(card, activity)) }}</div>
           <div class="allowance-foot"><span>本期上限 NT$ {{ money(deriveSpendLimit(activity)) }}</span><span v-if="remaining(card, activity) === 0" class="exhausted">已用完，建議換卡</span></div>
         </div>
-        <div class="card-link">查看紀錄 / 新增消費<Icon name="arrow" /></div>
       </RouterLink>
     </div>
     <p class="local-note"><Icon name="shield" />定期備份</p>

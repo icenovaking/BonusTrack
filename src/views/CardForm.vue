@@ -46,7 +46,7 @@ async function removeCard() {
 <template>
   <section v-if="!id || existing" class="form-page">
     <div class="title-row"><h1>{{ existing ? '卡片設定' : '新增卡片' }}</h1><RouterLink class="text-button back-link" :to="existing ? `/cards/${id}` : '/' " :aria-label="existing ? '返回卡片' : '返回我的卡片'"><Icon name="back" />{{ existing ? '返回卡片' : '我的卡片' }}</RouterLink></div>
-    <form class="form-sheet" @submit.prevent="save" @input="dirty" @change="dirty">
+    <form class="form-sheet" :class="{ 'card-settings-form': existing }" @submit.prevent="save" @input="dirty" @change="dirty">
       <label>卡片名稱<input v-model="name" required maxlength="100" placeholder="例如：玉山熊本熊卡" autocomplete="off" /></label>
       <fieldset :disabled="locked"><legend>額度計算週期</legend>
         <label class="radio-row"><input type="radio" v-model="mode" value="billing-day" />自訂結帳日<span class="muted">跟著卡片帳單計算</span></label>

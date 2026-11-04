@@ -88,7 +88,8 @@ for (const archived of [false, true]) {
     const before = dataset(archived)
     await restore(page, before)
     await page.getByLabel('卡片名稱').fill('已更新名稱')
-    await page.getByRole('button', { name: '儲存卡片', exact: true }).click()
+    await page.getByRole('button', { name: '儲存卡片', exact: true }).focus()
+    await page.keyboard.press('Enter')
     await expect(page).toHaveURL(new RegExp(`#/cards/${card.id}$`))
     await page.reload()
     await expectStored(page, { ...before, cards: [{ ...before.cards[0]!, name: '已更新名稱' }, before.cards[1]!] })
@@ -96,10 +97,12 @@ for (const archived of [false, true]) {
 }
 
 test('new cards keep creation without management controls', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 500 })
   await page.goto('/#/cards/new')
   await expect(page.getByRole('heading', { name: '新增卡片', exact: true })).toBeVisible()
   await expect(page.getByRole('region', { name: '卡片管理' })).toHaveCount(0)
   await expect(page.getByRole('button', { name: /封存卡片|恢復使用卡片|刪除卡片/ })).toHaveCount(0)
+  await expect(page.locator('.form-actions')).toHaveCSS('position', 'sticky')
   await page.getByLabel('卡片名稱').fill('新卡')
   await page.getByRole('button', { name: '儲存卡片', exact: true }).click()
   await expect(page.getByRole('heading', { name: '新卡', exact: true })).toBeVisible()
@@ -138,6 +141,49 @@ async function failNextCardWrite(page: Page) {
     }
   })
 }
+
+for (const width of [390, 1280]) {
+  test(`settings save scrolls with the form at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 500 })
+    await restore(page)
+    await page.getByRole('button', { name: '關閉通知', exact: true }).click()
+    const actions = page.locator('.form-actions')
+    await expect(actions).toHaveCSS('position', 'static')
+    const measure = () => page.evaluate(() => ({
+      scroll: scrollY,
+      actions: document.querySelector('.form-actions')!.getBoundingClientRect().top,
+      form: document.querySelector('form')!.getBoundingClientRect().top,
+    }))
+    await page.evaluate(() => window.scrollTo(0, 0))
+    const before = await measure()
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight))
+    await expect.poll(async () => (await measure()).scroll).toBeGreaterThan(before.scroll)
+    const after = await measure()
+    expect(after.actions).toBeLessThan(before.actions)
+    expect(before.actions - after.actions).toBeCloseTo(after.scroll - before.scroll, 0)
+    expect(before.form - after.form).toBeCloseTo(before.actions - after.actions, 0)
+    const actionBox = await actions.boundingBox()
+    const managementBox = await page.locator('.card-management').boundingBox()
+    expect(actionBox!.y + actionBox!.height).toBeLessThan(managementBox!.y)
+  })
+}
+
+test('failed inline save retains draft and allows retry', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 500 })
+  const before = dataset()
+  await restore(page, before)
+  await page.getByLabel('卡片名稱').fill('重試後名稱')
+  await failNextCardWrite(page)
+  await page.getByRole('button', { name: '儲存卡片', exact: true }).click()
+  await expect(page.getByRole('alert')).toContainText('儲存失敗')
+  await expect(page.getByLabel('卡片名稱')).toHaveValue('重試後名稱')
+  await expect(page.locator('.form-actions')).toHaveCSS('position', 'static')
+  await expectStored(page, before)
+  await page.getByRole('button', { name: '儲存卡片', exact: true }).click()
+  await expect(page).toHaveURL(new RegExp(`#/cards/${card.id}$`))
+  await page.reload()
+  await expectStored(page, { ...before, cards: [{ ...before.cards[0]!, name: '重試後名稱' }, before.cards[1]!] })
+})
 
 async function holdCardWrites(page: Page) {
   await page.evaluate(async () => {
@@ -342,7 +388,7 @@ for (const width of [320, 390, 1280]) {
     expect(managementBox!.y).toBeGreaterThan(formBox!.y + formBox!.height)
     await expect(page.getByRole('button', { name: '刪除卡片', exact: true })).toHaveCSS('color', 'rgb(155, 66, 49)')
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
-    await page.screenshot({ path: `.impeccable/review/consolidate-card-settings/settings-${width}.png`, fullPage: true })
+    await page.screenshot({ path: `.impeccable/review/polish-card-settings-and-home/settings-${width}.png`, fullPage: true })
 
     const archive = page.getByRole('button', { name: '封存卡片', exact: true })
     await archive.focus()
@@ -364,10 +410,10 @@ for (const width of [320, 390, 1280]) {
       await expect(page.getByRole('alert')).toContainText('儲存失敗')
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
       await page.evaluate(() => window.scrollTo(0, 0))
-      await page.screenshot({ path: '.impeccable/review/consolidate-card-settings/settings-error-390.png', fullPage: true })
+      await page.screenshot({ path: '.impeccable/review/polish-card-settings-and-home/settings-error-390.png', fullPage: true })
       await page.goto(`/#/cards/${card.id}`)
       await page.evaluate(() => window.scrollTo(0, 0))
-      await page.screenshot({ path: '.impeccable/review/consolidate-card-settings/detail-390.png', fullPage: true })
+      await page.screenshot({ path: '.impeccable/review/polish-card-settings-and-home/detail-390.png', fullPage: true })
     }
   })
 }

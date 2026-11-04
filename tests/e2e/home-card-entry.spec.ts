@@ -1,15 +1,15 @@
 import { expect, test, type Page } from '@playwright/test'
-import type { Card } from '../../src/domain/models'
+import type { Activity, Card } from '../../src/domain/models'
 
 const archivedCard: Card = { id: 'archived', name: '已封存旅遊卡', cycleMode: 'calendar-month', closingDay: null, archived: true }
 const activeCard: Card = { ...archivedCard, id: 'active', name: '日常消費卡', archived: false }
 
-async function openHome(page: Page, cards: Card[] = []) {
+async function openHome(page: Page, cards: Card[] = [], activities: Activity[] = []) {
   if (cards.length) {
     await page.goto('/#/settings')
     await page.getByLabel('選擇 JSON 備份').setInputFiles({
       name: 'home-cards.json', mimeType: 'application/json',
-      buffer: Buffer.from(JSON.stringify({ schemaVersion: 1, exportedAt: '2026-11-03T00:00:00Z', cards, activities: [], transactions: [] })),
+      buffer: Buffer.from(JSON.stringify({ schemaVersion: 1, exportedAt: '2026-11-03T00:00:00Z', cards, activities, transactions: [] })),
     })
     page.once('dialog', dialog => dialog.accept())
     await page.getByRole('button', { name: '確認取代全部資料' }).click()
@@ -30,6 +30,70 @@ async function expectConciseCopy(page: Page) {
   await expect(page.locator('.local-note svg')).toHaveCount(1)
   await expect(page.locator('footer')).toHaveCount(0)
   await expect(page.getByText('離線可用', { exact: true })).toHaveCount(0)
+}
+
+test.describe('whole-card navigation', () => {
+  test.use({ viewport: { width: 390, height: 800 }, isMobile: true, hasTouch: true })
+
+  for (const archived of [false, true]) {
+    for (const withActivity of [false, true]) {
+      test(`concise card keeps click keyboard and touch navigation archived=${archived} activity=${withActivity}`, async ({ page }) => {
+        const card = archived ? archivedCard : activeCard
+        const activities: Activity[] = withActivity ? [{
+          id: 'home-offer', cardId: card.id, name: '旅遊加碼', rewardCapMinor: 50000,
+          bonusRateBasisPoints: 600, archived: false, note: '海外適用',
+        }] : []
+        await openHome(page, [card], activities)
+        const selectList = async () => {
+          if (archived) await page.getByRole('button', { name: '查看已封存卡片' }).click()
+        }
+        await selectList()
+        const link = page.getByRole('link', { name: `查看 ${card.name}`, exact: true })
+        await expect(link).toHaveAttribute('href', `#/cards/${card.id}`)
+        await expect(link.locator('.card-link')).toHaveCount(0)
+        await expect(link).not.toContainText('查看紀錄 / 新增消費')
+        await expect(link.locator('.card-heading > svg path')).toHaveAttribute('d', 'm9 5 7 7-7 7')
+        await expect(link.locator(':scope > svg')).toHaveCount(0)
+        const descriptionId = await link.getAttribute('aria-describedby')
+        expect(descriptionId).toBeTruthy()
+        await expect(page.locator(`[id="${descriptionId}"]`)).not.toBeEmpty()
+        if (withActivity) {
+          await expect(link.locator('.activity-name')).toContainText('旅遊加碼')
+          await expect(link.locator('.activity-note')).toHaveText('海外適用')
+          await expect(link.locator('.amount')).toHaveText('NT$ 8,333')
+          await expect(page.locator(`[id="${descriptionId}"]`)).toContainText('海外適用')
+        } else {
+          await expect(link.locator('.card-no-activity')).toHaveText(archived ? '查看保留的活動與消費紀錄' : '還沒有加碼活動，點此開始設定')
+        }
+        await link.locator('.period-caption').click()
+        await expect(page).toHaveURL(new RegExp(`#/cards/${card.id}$`))
+        await page.goto('/')
+        await selectList()
+        await link.focus()
+        await expect(link).toBeFocused()
+        await page.keyboard.press('Enter')
+        await expect(page).toHaveURL(new RegExp(`#/cards/${card.id}$`))
+        await page.goto('/')
+        await selectList()
+        await link.locator(withActivity ? '.amount' : '.card-no-activity').tap()
+        await expect(page).toHaveURL(new RegExp(`#/cards/${card.id}$`))
+      })
+    }
+  }
+})
+
+for (const width of [320, 390, 1280]) {
+  test(`home card layout without footer prompts at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 800 })
+    await openHome(page, [activeCard], [{
+      id: 'layout-offer', cardId: activeCard.id, name: '旅遊加碼', rewardCapMinor: 50000,
+      bonusRateBasisPoints: 600, archived: false, note: '海外適用',
+    }])
+    await expect(page.locator('.card-link')).toHaveCount(0)
+    await expect(page.locator('.card-heading > svg')).toHaveCount(1)
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+    await page.screenshot({ path: `.impeccable/review/polish-card-settings-and-home/home-${width}.png`, fullPage: true })
+  })
 }
 
 for (const scenario of [

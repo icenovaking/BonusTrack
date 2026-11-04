@@ -65,8 +65,6 @@ textarea { resize: vertical; }
 .amount > span { font-size: .875rem; font-weight: 500; letter-spacing: 0; color: var(--muted); }
 .allowance-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px; color: var(--muted); font-size: .75rem; margin-top: 10px; }
 .exhausted { color: var(--danger); }
-.card-link { margin-top: 24px; display: flex; align-items: center; justify-content: space-between; font-size: .8125rem; color: var(--accent); }
-.card-link svg { width: 16px; }
 .card-no-activity { margin-top: 24px; color: var(--muted); font-size: .875rem; min-height: 70px; }
 .local-note { display: flex; justify-content: center; align-items: center; gap: 8px; color: var(--muted); font-size: .8125rem; margin-top: 40px; }
 .empty-state { padding: 64px 24px; text-align: center; border: 1px dashed #bac9c2; border-radius: var(--radius); background: #fafcfb; }
@@ -194,7 +192,7 @@ summary { min-height: 44px; padding: 10px 0; border-radius: 4px; }
   .period-select select { font-size: 1rem; }
   .section-heading { gap: 10px; flex-wrap: wrap; }
   .form-actions { position: sticky; bottom: 0; background: white; padding-bottom: env(safe-area-inset-bottom); }
-  .purchase-form .form-actions, .activity-form .form-actions { position: static; }
+  .purchase-form .form-actions, .activity-form .form-actions, .card-settings-form .form-actions { position: static; }
   .info-strip { padding: 16px; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; } }
