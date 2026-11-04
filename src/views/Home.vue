@@ -43,6 +43,6 @@ function remaining(card: Card, activity: Activity) {
         <div class="card-link">查看紀錄 / 新增消費<Icon name="arrow" /></div>
       </RouterLink>
     </div>
-    <p class="local-note"><Icon name="shield" />資料保存在這個瀏覽器，記得定期匯出備份。</p>
+    <p class="local-note"><Icon name="shield" />定期備份</p>
   </section>
 </template>

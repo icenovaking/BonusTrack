@@ -26,7 +26,10 @@ async function expectConciseCopy(page: Page) {
     '把你的第一張卡加進來',
     '設定回饋上限與加碼百分比，剩下的額度交給這裡記。',
   ]) await expect(page.getByText(text, { exact: true })).toHaveCount(0)
-  await expect(page.getByText('資料保存在這個瀏覽器，記得定期匯出備份。', { exact: true })).toBeVisible()
+  await expect(page.getByText('定期備份', { exact: true })).toBeVisible()
+  await expect(page.locator('.local-note svg')).toHaveCount(1)
+  await expect(page.locator('footer')).toHaveCount(0)
+  await expect(page.getByText('離線可用', { exact: true })).toHaveCount(0)
 }
 
 for (const scenario of [

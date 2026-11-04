@@ -45,8 +45,7 @@ async function removeCard() {
 </script>
 <template>
   <section v-if="!id || existing" class="form-page">
-    <RouterLink class="back-link" :to="existing ? `/cards/${id}` : '/' "><Icon name="back" />返回{{ existing ? '卡片' : '我的卡片' }}</RouterLink>
-    <h1>{{ existing ? '卡片設定' : '新增卡片' }}</h1><p class="lead">先設定卡片，再加入你想追蹤的加碼活動。</p>
+    <div class="title-row"><h1>{{ existing ? '卡片設定' : '新增卡片' }}</h1><RouterLink class="text-button back-link" :to="existing ? `/cards/${id}` : '/' " :aria-label="existing ? '返回卡片' : '返回我的卡片'"><Icon name="back" />{{ existing ? '返回卡片' : '我的卡片' }}</RouterLink></div>
     <form class="form-sheet" @submit.prevent="save" @input="dirty" @change="dirty">
       <label>卡片名稱<input v-model="name" required maxlength="100" placeholder="例如：玉山熊本熊卡" autocomplete="off" /></label>
       <fieldset :disabled="locked"><legend>額度計算週期</legend>
@@ -64,5 +63,5 @@ async function removeCard() {
       <p v-if="locked">已有消費紀錄，請改用封存</p>
     </section>
   </section>
-  <section v-else class="empty-state"><h1>找不到這張卡片</h1><p class="error" role="alert">找不到這張卡片。</p><RouterLink class="button primary" to="/">返回我的卡片</RouterLink></section>
+  <section v-else class="empty-state"><div class="title-row"><h1>找不到這張卡片</h1><RouterLink class="text-button back-link" to="/" aria-label="返回我的卡片"><Icon name="back" />我的卡片</RouterLink></div><p class="error" role="alert">找不到這張卡片。</p></section>
 </template>

@@ -34,8 +34,11 @@ async function removePurchase(purchase: Purchase) { if (confirm(`刪除 ${purcha
 </script>
 <template>
   <section v-if="card && period">
-    <RouterLink class="back-link" to="/"><Icon name="back" />我的卡片</RouterLink>
-    <div class="page-heading"><div><h1>{{ card.name }}</h1><p class="lead">{{ card.archived ? '此卡已封存，歷史紀錄仍為你保留。' : '追蹤加碼額度，記下每一筆消費。' }}</p></div><RouterLink class="button secondary" :to="`/cards/${cardId}/edit`"><Icon name="edit" />卡片設定</RouterLink></div>
+    <div class="page-heading detail-heading">
+      <div class="title-row"><h1>{{ card.name }}</h1><RouterLink class="text-button back-link" to="/"><Icon name="back" />我的卡片</RouterLink></div>
+      <p v-if="card.archived" class="lead">已封存</p>
+      <RouterLink class="button secondary" :to="`/cards/${cardId}/edit`"><Icon name="edit" />卡片設定</RouterLink>
+    </div>
     <p v-if="error" class="error" role="alert">{{ error }}</p>
     <div class="section-heading"><h2>加碼額度</h2><RouterLink v-if="!card.archived" class="text-button" :to="`/cards/${cardId}/activities/new`"><Icon name="plus" />新增活動</RouterLink></div>
     <label class="period-select">查看期別<select :value="currentEnd" @change="chosenEnd = ($event.target as HTMLSelectElement).value"><option v-for="option in periodOptions" :key="option.end" :value="option.end">{{ periodLabel(option) }}</option></select></label>
@@ -48,11 +51,11 @@ async function removePurchase(purchase: Purchase) { if (confirm(`刪除 ${purcha
         <details class="management"><summary>管理活動</summary><div class="management-actions"><RouterLink class="text-button" :to="`/cards/${cardId}/activities/${activity.id}/edit`">編輯</RouterLink><button class="text-button" :disabled="state.busy" @click="archiveActivity(activity)">{{ activity.archived ? '恢復使用' : '封存' }}</button><button v-if="!state.data.transactions.some(p => p.activityId === activity.id)" class="text-button danger" :disabled="state.busy" @click="removeActivity(activity)">刪除活動</button></div></details>
       </section>
     </div>
-    <div class="empty-inline" v-else><h3>先加入一個加碼活動</h3><p>輸入回饋上限與加碼百分比，即可開始扣減消費額度。</p><RouterLink v-if="!card.archived" class="button secondary" :to="`/cards/${cardId}/activities/new`">新增加碼活動</RouterLink></div>
+    <div class="empty-inline" v-else><h3>先加入一個加碼活動</h3><RouterLink v-if="!card.archived" class="button secondary" :to="`/cards/${cardId}/activities/new`">新增加碼活動</RouterLink></div>
     <div class="section-heading history-heading"><h2>消費紀錄 <span class="count">{{ purchases.length }}</span></h2><span class="muted">依消費日期排序</span></div>
-    <div class="empty-inline" v-if="!purchases.length"><Icon name="wallet" /><h3>這一期還沒有消費</h3><p>記下一筆消費，剩餘額度就會自動更新。</p></div>
+    <div class="empty-inline" v-if="!purchases.length"><Icon name="wallet" /><h3>這一期還沒有消費</h3></div>
     <ul class="purchase-list" v-else><li v-for="purchase in purchases" :key="purchase.id"><div class="purchase-info"><span class="purchase-date">{{ purchase.spentOn.replaceAll('-', '/') }}<span v-if="purchase.overridePeriodEnd" class="manual-tag">手動歸期</span></span><strong>{{ activityName(purchase) }}</strong><p v-if="purchase.note">{{ purchase.note }}</p></div><div class="purchase-value"><strong>NT$ {{ money(purchase.amountMinor) }}</strong><div class="purchase-actions"><RouterLink class="text-button" :to="`/cards/${cardId}/purchases/${purchase.id}/edit`" :aria-label="`編輯 ${purchase.spentOn} 消費`">編輯</RouterLink><button class="text-button danger" :disabled="state.busy" @click="removePurchase(purchase)" :aria-label="`刪除 ${purchase.spentOn} 消費`">刪除</button></div></div></li></ul>
     <div class="mobile-action" v-if="!card.archived"><RouterLink class="button primary" :to="`/cards/${cardId}/purchases/new`"><Icon name="plus" />新增消費</RouterLink></div>
   </section>
-  <section class="empty-state" v-else><h1>找不到這張卡片</h1><RouterLink class="button primary" to="/">返回我的卡片</RouterLink></section>
+  <section class="empty-state" v-else><div class="title-row"><h1>找不到卡片</h1><RouterLink class="text-button back-link" to="/" aria-label="返回我的卡片"><Icon name="back" />我的卡片</RouterLink></div></section>
 </template>

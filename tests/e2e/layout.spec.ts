@@ -1,4 +1,111 @@
-import { test, expect } from '@playwright/test'
+import { test, expect, type Page } from '@playwright/test'
+
+async function seedNavigation(page: Page) {
+  await page.goto('/#/settings')
+  const data = {
+    schemaVersion: 1, exportedAt: '2026-11-04T04:00:00Z',
+    cards: [{ id: 'nav', name: '旅遊專用卡片名稱很長也能完整閱讀與操作不會截斷重要資訊', cycleMode: 'calendar-month', closingDay: null, archived: false }],
+    activities: [{ id: 'bonus', cardId: 'nav', name: '指定通路', rewardCapMinor: 50000, bonusRateBasisPoints: 600, archived: false }],
+    transactions: [{ id: 'purchase', cardId: 'nav', activityId: 'bonus', spentOn: '2026-11-04', amountMinor: 10000, note: '原始備註', overridePeriodEnd: null }],
+  }
+  await page.getByLabel('選擇 JSON 備份').setInputFiles({ name: 'navigation.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(data)) })
+  page.once('dialog', dialog => dialog.accept())
+  await page.getByRole('button', { name: '確認取代全部資料' }).click()
+  await expect(page.getByText('備份已還原，額度已重新計算', { exact: true })).toBeVisible()
+  await page.getByRole('button', { name: '關閉通知' }).click()
+  return data
+}
+
+test('shared title-row returns to the correct destination across routes, long names and text sizes', async ({ page }) => {
+  test.setTimeout(120000)
+  await page.clock.install({ time: new Date('2026-11-04T12:00:00+08:00') })
+  const data = await seedNavigation(page)
+  const routes = [
+    ['/cards/nav', '/'], ['/cards/new', '/'], ['/cards/nav/edit', '/cards/nav'],
+    ['/cards/nav/activities/new', '/cards/nav'], ['/cards/nav/activities/bonus/edit', '/cards/nav'],
+    ['/cards/nav/purchases/new', '/cards/nav'], ['/cards/nav/purchases/purchase/edit', '/cards/nav'],
+    ['/settings', '/'], ['/cards/missing', '/'], ['/cards/missing/edit', '/'],
+  ]
+  for (const width of [320, 390, 768, 1280]) {
+    await page.setViewportSize({ width, height: 900 })
+    for (const fontSize of [16, 32]) {
+      for (const [route, destination] of routes) {
+        await page.goto(`/#${route}`)
+        await page.evaluate(size => { document.documentElement.style.fontSize = `${size}px` }, fontSize)
+        const heading = page.locator('.title-row h1')
+        const back = page.locator('.title-row .back-link')
+        await expect(back).toHaveAttribute('href', `#${destination}`)
+        await expect(back).toHaveAccessibleName(/我的卡片|返回卡片/)
+        await expect(back.locator('svg')).toHaveCount(1)
+        const titleBox = (await heading.boundingBox())!
+        const backBox = (await back.boundingBox())!
+        expect(Math.abs(titleBox.y + titleBox.height / 2 - backBox.y - backBox.height / 2), route).toBeLessThanOrEqual(1)
+        expect(backBox.x, route).toBeGreaterThanOrEqual(titleBox.x + titleBox.width)
+        expect(await back.evaluate(el => getComputedStyle(el).whiteSpace)).toBe('nowrap')
+        expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${route}, ${width}, ${fontSize}`).toBe(true)
+        await expect(page.locator('footer')).toHaveCount(0)
+        if (route === '/cards/nav') {
+          await expect(heading).toHaveText(data.cards[0]!.name)
+          const add = (await page.getByRole('link', { name: '新增活動', exact: true }).boundingBox())!
+          expect(Math.abs(backBox.x + backBox.width - add.x - add.width)).toBeLessThanOrEqual(1)
+        }
+        if (width === 390 && ['/cards/nav', '/cards/nav/purchases/new', '/settings'].includes(route!)) {
+          await page.screenshot({ path: `.impeccable/review/navigation-${route!.replaceAll('/', '-')}-${fontSize}.png`, fullPage: true })
+        }
+        await page.keyboard.press('Tab')
+        await back.focus()
+        await expect(back).toBeFocused()
+        expect(await back.evaluate(el => getComputedStyle(el).outlineStyle)).toBe('solid')
+        await page.keyboard.press('Enter')
+        await expect(page).toHaveURL(new RegExp(`#${destination}$`))
+      }
+    }
+  }
+})
+
+test('return confirmation preserves canceled drafts and discards confirmed drafts without saving', async ({ page }) => {
+  await page.clock.install({ time: new Date('2026-11-04T12:00:00+08:00') })
+  const data = await seedNavigation(page)
+  const forms = [
+    { route: '/cards/new', label: '卡片名稱', original: '', destination: '/' },
+    { route: '/cards/nav/edit', label: '卡片名稱', original: data.cards[0]!.name, destination: '/cards/nav' },
+    { route: '/cards/nav/activities/new', label: '活動名稱', original: '', destination: '/cards/nav' },
+    { route: '/cards/nav/activities/bonus/edit', label: '活動名稱', original: '指定通路', destination: '/cards/nav' },
+    { route: '/cards/nav/purchases/new', label: '備註', original: '', destination: '/cards/nav' },
+    { route: '/cards/nav/purchases/purchase/edit', label: '備註', original: '原始備註', destination: '/cards/nav' },
+  ]
+  for (const form of forms) {
+    await page.goto(`/#${form.route}`)
+    const field = page.getByLabel(form.label, { exact: form.label !== '備註' })
+    await field.fill('尚未儲存的草稿')
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const dialogPromise = page.waitForEvent('dialog')
+      const click = page.locator('.back-link').click()
+      const dialog = await dialogPromise
+      expect(dialog.message()).toBe('尚有未儲存的內容，確定離開？')
+      await dialog.dismiss()
+      await click
+      await expect(page).toHaveURL(new RegExp(`#${form.route}$`))
+      await expect(field).toHaveValue('尚未儲存的草稿')
+    }
+    page.once('dialog', dialog => dialog.accept())
+    await page.locator('.back-link').click()
+    await expect(page).toHaveURL(new RegExp(`#${form.destination}$`))
+    await page.goto(`/#${form.route}`)
+    await expect(field).toHaveValue(form.original)
+  }
+  await page.goto('/#/settings')
+  const downloadPromise = page.waitForEvent('download')
+  await page.getByRole('button', { name: '匯出 JSON 備份' }).click()
+  const download = await downloadPromise
+  const stream = await download.createReadStream()
+  const chunks: Buffer[] = []
+  for await (const chunk of stream!) chunks.push(Buffer.from(chunk))
+  const exported = JSON.parse(Buffer.concat(chunks).toString('utf8'))
+  expect(exported.cards).toEqual(data.cards)
+  expect(exported.activities).toEqual(data.activities.map(activity => ({ ...activity, note: '' })))
+  expect(exported.transactions).toEqual(data.transactions)
+})
 
 test('purchase form stays aligned and saves without floating over fields in creation and editing', async ({ page }) => {
   await page.clock.install({ time: new Date('2026-11-04T12:00:00+08:00') })
@@ -37,6 +144,11 @@ test('purchase form stays aligned and saves without floating over fields in crea
         expect(Math.abs(box!.x - bounds[0]!.x)).toBeLessThanOrEqual(1)
         expect(Math.abs(box!.x + box!.width - bounds[0]!.x - bounds[0]!.width)).toBeLessThanOrEqual(1)
       }
+      const title = (await page.locator('.title-row h1').boundingBox())!
+      const back = (await page.locator('.back-link').boundingBox())!
+      expect(Math.abs(title.y + title.height / 2 - back.y - back.height / 2)).toBeLessThanOrEqual(1)
+      expect(back.x).toBeGreaterThanOrEqual(title.x + title.width)
+      await expect(page.locator('footer')).toHaveCount(0)
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
       expect(await page.locator('form').evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true)
       await note.focus()

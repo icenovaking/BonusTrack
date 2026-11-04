@@ -32,15 +32,14 @@ async function replaceData() {
 </script>
 <template>
   <section class="settings-page">
-    <RouterLink class="back-link" to="/"><Icon name="back" />我的卡片</RouterLink>
-    <h1>資料與備份</h1><p class="lead">讓記錄留得住，換手機也能帶著走。</p>
-    <div class="info-strip"><Icon name="shield" /><p>資料只保存在這個瀏覽器。清除網站資料、換手機或瀏覽器儲存被回收，都可能遺失紀錄。請定期匯出備份。</p></div>
-    <section class="settings-section"><h2>匯出備份</h2><p>下載完整 JSON 備份，包含卡片、活動與所有歷史消費。</p><button class="button secondary" :disabled="state.busy" @click="exportData"><Icon name="download" />匯出 JSON 備份</button></section>
-    <section class="settings-section"><h2>從備份還原</h2><p>選擇之前匯出的 JSON 檔案，驗證後再確認取代。這個操作會取代全部資料，不會合併。</p><label class="file-label">選擇 JSON 備份<input type="file" accept=".json,application/json" @change="readBackup" :disabled="state.busy" /></label>
+    <div class="title-row"><h1>資料與備份</h1><RouterLink class="text-button back-link" to="/"><Icon name="back" />我的卡片</RouterLink></div>
+    <div class="info-strip"><Icon name="shield" /><p>僅存此瀏覽器，清除資料或換機前請備份。</p></div>
+    <section class="settings-section"><h2>匯出備份</h2><button class="button secondary" :disabled="state.busy" @click="exportData"><Icon name="download" />匯出 JSON 備份</button></section>
+    <section class="settings-section"><h2>從備份還原</h2><p>還原會取代全部資料，不會合併。</p><label class="file-label">選擇 JSON 備份<input type="file" accept=".json,application/json" @change="readBackup" :disabled="state.busy" /></label>
       <div class="import-preview" v-if="preview"><h3>備份已通過驗證</h3><p>{{ preview.cards.length }} 張卡片 · {{ preview.activities.length }} 個活動 · {{ preview.transactions.length }} 筆消費</p><p class="notice">還原後將完整取代目前資料。建議先匯出目前備份。</p><div class="inline-actions"><button class="button primary" :disabled="state.busy" @click="replaceData">{{ state.busy ? '還原中…' : '確認取代全部資料' }}</button><button class="button secondary" :disabled="state.busy" @click="preview = null">取消</button></div></div>
       <p v-if="error" class="error" role="alert">{{ error }}</p>
     </section>
-    <section class="settings-section"><h2>加入手機主畫面</h2><p>像 App 一樣開啟 BonusTrack。{{ offlineReady ? '離線資源已準備完成，沒有網路也能查看與記帳。' : registrationError ? '離線資源尚未準備完成，請連線後重新開啟。' : '首次連線開啟並完成快取後，即可離線使用。' }}</p><button v-if="canInstall" class="button secondary" @click="installApp"><Icon name="plus" />安裝 BonusTrack</button><div v-else class="install-help"><p><strong>iPhone / iPad：</strong>在 Safari 開啟，選擇「分享」→「加入主畫面」。</p><p><strong>Android：</strong>在 Chrome 選單選擇「安裝應用程式」或「加到主畫面」。選項名稱依瀏覽器版本而異。</p></div><p class="muted">沒有安裝也能直接在瀏覽器使用。換瀏覽器前請先備份。</p></section>
-    <section class="settings-section"><h2>使用說明</h2><p>本工具依你設定的回饋上限與加碼百分比估算可刷額度；不計算實際回饋金。銀行入帳期別不同時，可在消費紀錄中調整所屬期別。</p><p class="muted">只記錄卡片名稱即可，不需要輸入卡號或安全碼。</p></section>
+    <section class="settings-section"><h2>加入手機主畫面</h2><p><Icon :name="offlineReady ? 'check' : 'offline'" /> {{ offlineReady ? '離線可用' : registrationError ? '離線未就緒，請連線重試' : '離線準備中' }}</p><button v-if="canInstall" class="button secondary" @click="installApp"><Icon name="plus" />安裝 BonusTrack</button><div v-else class="install-help"><p><strong>iPhone / iPad：</strong>Safari → 分享 → 加入主畫面</p><p><strong>Android：</strong>Chrome → 選單 → 安裝應用程式</p></div></section>
+    <section class="settings-section"><h2>使用說明</h2><p>估算可刷額度；期別可於消費紀錄調整。</p><p class="muted">無須卡號或安全碼</p></section>
   </section>
 </template>

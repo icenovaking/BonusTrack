@@ -100,7 +100,7 @@ test('archived cards leave the active list and remain accessible with their purc
   await page.getByRole('link', { name: '卡片設定', exact: true }).click()
   page.once('dialog', dialog => dialog.accept())
   await page.getByRole('button', { name: '封存卡片', exact: true }).click()
-  await expect(page.getByText('此卡已封存，歷史紀錄仍為你保留。', { exact: true })).toBeVisible()
+  await expect(page.locator('.detail-heading .lead')).toHaveText('已封存')
   await expect(page.getByRole('link', { name: '新增消費', exact: true })).toHaveCount(0)
   await expect(page.locator('.purchase-list li')).toHaveCount(1)
   await page.getByRole('link', { name: '我的卡片', exact: true }).click()
@@ -120,9 +120,9 @@ test('archived cards leave the active list and remain accessible with their purc
 
 test('first-card and no-activity empty states expose working creation actions', async ({ page }) => {
   await page.goto('/')
-  await expect(page.getByRole('heading', { name: '把你的第一張卡加進來', exact: true })).toBeVisible()
+  await expect(page.getByRole('heading', { name: '活動加碼追蹤', exact: true })).toBeVisible()
   await expect(page.locator('.credit-card')).toHaveCount(0)
-  await page.getByRole('link', { name: '新增第一張卡片', exact: true }).click()
+  await page.getByRole('link', { name: '新增卡片', exact: true }).click()
   await expect(page.getByRole('heading', { name: '新增卡片', exact: true })).toBeVisible()
   await page.getByLabel('卡片名稱').fill('從空狀態建立的卡片')
   await page.getByRole('button', { name: '儲存卡片', exact: true }).click()

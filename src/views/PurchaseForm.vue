@@ -30,8 +30,8 @@ async function save() {
 </script>
 <template>
   <section class="form-page">
-    <RouterLink class="back-link" :to="`/cards/${cardId}`"><Icon name="back" />返回卡片</RouterLink>
-    <h1>{{ existing ? '編輯消費' : '新增消費' }}</h1><p class="lead">{{ card?.name }} · 記錄已發生的消費。</p>
+    <div class="title-row"><h1>{{ existing ? '編輯消費' : '新增消費' }}</h1><RouterLink class="text-button back-link" :to="`/cards/${cardId}`"><Icon name="back" />返回卡片</RouterLink></div>
+    <p class="lead">{{ card?.name }}</p>
     <form class="form-sheet purchase-form" @submit.prevent="save" @input="dirty" @change="dirty">
       <label class="amount-field">消費金額（台幣）<div class="money-input"><span>NT$</span><input v-model="amount" inputmode="decimal" required placeholder="0" autocomplete="off" aria-label="消費金額（台幣）" /></div></label>
       <label>消費日期<input type="date" v-model="spentOn" :max="state.today" min="1900-01-01" required /></label>

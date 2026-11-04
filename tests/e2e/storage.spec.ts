@@ -13,7 +13,14 @@ async function selectBackup(page: Page, content = JSON.stringify(dataset)) {
 }
 async function importData(page: Page) {
   await selectBackup(page)
-  page.once('dialog', dialog => dialog.accept())
+  await expect(page.getByText('僅存此瀏覽器，清除資料或換機前請備份。', { exact: true })).toBeVisible()
+  await expect(page.getByText('還原會取代全部資料，不會合併。', { exact: true })).toBeVisible()
+  await expect(page.locator('.import-preview')).toContainText('1 張卡片 · 1 個活動 · 1 筆消費')
+  await expect(page.locator('.import-preview .notice')).toHaveText('還原後將完整取代目前資料。建議先匯出目前備份。')
+  page.once('dialog', async dialog => {
+    expect(dialog.message()).toBe('將完整取代這個瀏覽器的所有卡片與消費紀錄，無法復原。確定繼續？')
+    await dialog.accept()
+  })
   await page.getByRole('button', { name: '確認取代全部資料' }).click()
   await expect(page.getByRole('status').filter({ hasText: '備份已還原' })).toBeVisible()
 }
@@ -70,8 +77,11 @@ test('storage write failure keeps purchase input, old allowance and permits retr
 
 test('cached application reopens offline at a card route and persists local changes and backups', async ({ page, context }) => {
   await importData(page)
-  await expect(page.getByText('已可離線使用', { exact: true })).toBeVisible()
+  await expect(page.getByText('離線可用', { exact: true })).toBeVisible()
+  await expect(page.getByText('離線可用', { exact: true }).locator('svg path')).toHaveAttribute('d', 'm5 12 4 4L19 6')
+  await expect(page.locator('footer')).toHaveCount(0)
   await page.goto('/#/cards/card')
+  await expect(page.getByText('離線可用', { exact: true })).toHaveCount(0)
   await expect(page.locator('.amount')).toContainText('8,233')
   await context.setOffline(true)
   await page.close()
@@ -99,8 +109,23 @@ test('cached application reopens offline at a card route and persists local chan
 
 test('failed initial service-worker registration never advertises offline readiness', async ({ page }) => {
   await page.addInitScript(() => { ServiceWorkerContainer.prototype.register = async () => { throw new Error('Simulated registration failure') } })
-  await page.goto('/')
-  await expect(page.getByRole('heading', { name: '我的卡片' })).toBeVisible()
-  await expect(page.getByText('離線準備未完成，請連線重試', { exact: true })).toBeVisible()
-  await expect(page.getByText('已可離線使用', { exact: true })).toHaveCount(0)
+  await page.goto('/#/settings')
+  await expect(page.getByRole('heading', { name: '資料與備份', exact: true })).toBeVisible()
+  await expect(page.getByText('離線未就緒，請連線重試', { exact: true })).toBeVisible()
+  await expect(page.getByText('離線未就緒，請連線重試', { exact: true }).locator('svg')).toHaveCount(1)
+  await expect(page.locator('footer')).toHaveCount(0)
+  await expect(page.getByText('離線可用', { exact: true })).toHaveCount(0)
+})
+
+test('pending cache preparation stays in settings without promising offline readiness', async ({ page }) => {
+  await page.addInitScript(() => { ServiceWorkerContainer.prototype.register = () => new Promise(() => {}) })
+  await page.goto('/#/settings')
+  await expect(page.getByText('離線準備中', { exact: true })).toBeVisible()
+  await expect(page.getByText('離線準備中', { exact: true }).locator('svg')).toHaveCount(1)
+  await expect(page.getByText('離線可用', { exact: true })).toHaveCount(0)
+  await expect(page.getByText('離線未就緒，請連線重試', { exact: true })).toHaveCount(0)
+  await page.getByRole('link', { name: '我的卡片', exact: true }).click()
+  await expect(page.getByRole('heading', { name: '活動加碼追蹤' })).toBeVisible()
+  await expect(page.getByText('離線準備中', { exact: true })).toHaveCount(0)
+  await expect(page.locator('footer')).toHaveCount(0)
 })

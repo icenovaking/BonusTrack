@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-03T08:52:08.928Z",
+  "generatedAt": "2026-11-04T02:32:40.516Z",
   "title": "Design System: BonusTrack",
   "extensions": {
     "colorMeta": {
@@ -179,7 +179,13 @@
         "src/tokens.css",
         "src/style.css",
         "src/components/Icon.vue",
-        "src/views/Home.vue"
+        "src/App.vue",
+        "src/views/Home.vue",
+        "src/views/CardDetail.vue",
+        "src/views/CardForm.vue",
+        "src/views/ActivityForm.vue",
+        "src/views/PurchaseForm.vue",
+        "src/views/Settings.vue"
       ],
       "rasterSource": "scripts/generate-icons.mjs",
       "tonalRamps": "Panel-only synthesized OKLCH ramps; they are not runtime tokens or additional UI colors."
@@ -199,13 +205,13 @@
       "kind": "button",
       "refersTo": "button-secondary",
       "description": "編輯、備份等次要動作。",
-      "html": "<button class=\"ds-secondary\">編輯卡片</button>",
+      "html": "<button class=\"ds-secondary\">卡片設定</button>",
       "css": ".ds-secondary{font:600 .9375rem/1.5 var(--font,sans-serif);min-height:48px;padding:10px 20px;border:1px solid var(--line,#dce4de);border-radius:var(--control-radius,8px);background:var(--surface,#fff);color:var(--ink,#20382f);cursor:pointer}.ds-secondary:hover{background:var(--tint,#eaf3ee)}.ds-secondary:focus-visible{outline:3px solid var(--accent,#16705a);outline-offset:4px}.ds-secondary:disabled{opacity:.6;cursor:not-allowed}"
     },
     {
       "name": "文字動作",
       "kind": "button",
-      "description": "活動管理、清單工具列等低權重動作。",
+      "description": "活動管理、清單工具列及標題旁返回連結等低權重動作。",
       "html": "<button class=\"ds-text\">查看已封存卡片</button>",
       "css": ".ds-text{font:550 .875rem/1.6 var(--font,sans-serif);min-height:44px;padding:6px 8px;border:0;border-radius:6px;background:transparent;color:var(--accent,#16705a);cursor:pointer}.ds-text:hover{background:var(--tint,#eaf3ee)}.ds-text:focus-visible{outline:3px solid var(--accent,#16705a);outline-offset:4px}.ds-text:disabled{opacity:.6;cursor:not-allowed}"
     },
@@ -246,6 +252,13 @@
       "description": "首頁使用中清單為空的局部變體；保留錢包圖示與單一新增入口，不沿用為封存或其他空白狀態的預設。",
       "html": "<div class=\"ds-empty\"><span class=\"ds-empty-icon\"><svg width=\"28\" height=\"28\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M20 8V5a2 2 0 0 0-2-2H6a3 3 0 0 0 0 6h14v12H6a3 3 0 0 1-3-3V6m17 7h-5v4h5\" /></svg></span><a class=\"ds-empty-action\" href=\"#\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 5v14M5 12h14\" /></svg>新增卡片</a></div>",
       "css": ".ds-empty{padding:32px 24px;text-align:center;border:1px dashed #bac9c2;border-radius:var(--radius,14px);background:#fafcfb;font-family:var(--font,sans-serif);line-height:1.6}.ds-empty-icon{display:grid;place-items:center;width:60px;height:60px;margin:0 auto 24px;background:var(--tint,#eaf3ee);color:var(--accent,#16705a);border-radius:16px}.ds-empty svg{flex-shrink:0;vertical-align:middle}.ds-empty-action{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:10px 20px;border-radius:var(--control-radius,8px);font-size:.9375rem;font-weight:600;line-height:1.5;text-align:center;background:var(--accent,#16705a);color:white;text-decoration:none;transition:background-color 160ms ease-out,color 160ms ease-out}.ds-empty-action:hover{background:var(--accent-hover,#105943)}.ds-empty-action:active{background:#0a4938}.ds-empty-action:focus-visible{outline:3px solid var(--accent,#16705a);outline-offset:4px}@media(max-width:600px){.ds-empty{padding-inline:20px}}@media(prefers-reduced-motion:reduce){.ds-empty-action{transition:none}}"
+    },
+    {
+      "name": "標題與返回導覽",
+      "kind": "custom",
+      "description": "標題靠左、圖示與四字返回標籤靠右並垂直置中；長標題可換行，返回文字不拆行，與換行後的新增活動仍維持右側對齊。頁面不設品牌或離線狀態頁尾。",
+      "html": "<div class=\"ds-title-row\"><h1>玉山熊本熊卡</h1><a class=\"ds-back\" href=\"#\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m15 5-7 7 7 7\" /></svg>我的卡片</a></div><div class=\"ds-section-row\"><h2>加碼額度</h2><a class=\"ds-add\" href=\"#\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 5v14M5 12h14\" /></svg>新增活動</a></div>",
+      "css": ".ds-title-row{display:flex;align-items:center;justify-content:space-between;gap:16px;color:var(--ink,#20382f);font-family:var(--font,sans-serif);line-height:1.6}.ds-title-row h1{flex:1;min-width:0;margin:0;text-align:left;font-size:2rem;line-height:1.3;letter-spacing:-.025em;font-weight:700;overflow-wrap:anywhere}.ds-back{display:inline-flex;align-items:center;justify-content:center;gap:5px;flex-shrink:0;white-space:nowrap;min-height:44px;box-sizing:border-box;padding:6px 8px;background:transparent;color:var(--accent,#16705a);font-size:.875rem;font-weight:550;border-radius:6px;text-decoration:none}.ds-back svg{flex-shrink:0;vertical-align:middle}.ds-back:hover{background:var(--tint,#eaf3ee);color:var(--accent,#16705a)}.ds-back:focus-visible{outline:3px solid var(--accent,#16705a);outline-offset:4px}@media(max-width:600px){.ds-title-row h1{font-size:1.625rem}}.ds-section-row{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:28px 0 12px;color:var(--ink,#20382f);font-family:var(--font,sans-serif);line-height:1.6}.ds-section-row h2{margin:0;font-size:1.2rem;font-weight:650;line-height:1.5;overflow-wrap:anywhere}.ds-add{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:44px;margin-left:auto;padding:6px 8px;background:transparent;color:var(--accent,#16705a);font-size:.875rem;font-weight:550;border-radius:6px;text-decoration:none}.ds-add svg{flex-shrink:0;vertical-align:middle}.ds-add:hover{background:var(--tint,#eaf3ee)}.ds-add:focus-visible{outline:3px solid var(--accent,#16705a);outline-offset:4px}@media(max-width:600px){.ds-section-row{gap:10px;flex-wrap:wrap}}"
     }
   ],
   "narrative": {
