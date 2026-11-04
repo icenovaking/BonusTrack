@@ -46,8 +46,31 @@ test('shared title-row returns to the correct destination across routes, long na
         await expect(page.locator('footer')).toHaveCount(0)
         if (route === '/cards/nav') {
           await expect(heading).toHaveText(data.cards[0]!.name)
+          const actions = page.locator('.card-detail-actions')
+          await expect(actions.getByRole('link')).toHaveText(['卡片設定', '新增活動'])
+          await expect(page.getByRole('link', { name: '卡片設定', exact: true })).toHaveCount(1)
+          const settings = actions.getByRole('link', { name: '卡片設定', exact: true })
           const add = (await page.getByRole('link', { name: '新增活動', exact: true }).boundingBox())!
+          const settingsBox = (await settings.boundingBox())!
+          const allowance = (await page.getByRole('heading', { name: '加碼額度', exact: true }).boundingBox())!
           expect(Math.abs(backBox.x + backBox.width - add.x - add.width)).toBeLessThanOrEqual(1)
+          if (Math.abs(settingsBox.y - add.y) <= 1) {
+            expect(settingsBox.x + settingsBox.width).toBeLessThanOrEqual(add.x)
+          } else {
+            expect(settingsBox.y + settingsBox.height).toBeLessThanOrEqual(add.y)
+          }
+          if (settingsBox.x < allowance.x + allowance.width) {
+            expect(settingsBox.y).toBeGreaterThanOrEqual(allowance.y + allowance.height)
+          }
+          for (const control of [settings, actions.getByRole('link', { name: '新增活動', exact: true })]) {
+            await expect(control).toHaveCSS('white-space', 'nowrap')
+            expect((await control.boundingBox())!.height).toBeGreaterThanOrEqual(44)
+          }
+          if ([390, 1280].includes(width)) {
+            await page.mouse.move(0, 0)
+            if (fontSize === 32) await actions.evaluate(element => element.scrollIntoView({ block: 'center' }))
+            await page.screenshot({ path: `.impeccable/review/align-card-actions-${width}-${fontSize}.png`, fullPage: fontSize === 16 })
+          }
         }
         if (width === 390 && ['/cards/nav', '/cards/nav/purchases/new', '/settings'].includes(route!)) {
           await page.screenshot({ path: `.impeccable/review/navigation-${route!.replaceAll('/', '-')}-${fontSize}.png`, fullPage: true })
@@ -61,6 +84,88 @@ test('shared title-row returns to the correct destination across routes, long na
       }
     }
   }
+})
+
+test('grouped card actions retain keyboard routes and archived card settings', async ({ page }) => {
+  await page.clock.install({ time: new Date('2026-11-04T12:00:00+08:00') })
+  await seedNavigation(page)
+  await page.goto('/#/cards/nav')
+  const settings = page.getByRole('link', { name: '卡片設定', exact: true })
+  const add = page.getByRole('link', { name: '新增活動', exact: true })
+  await settings.focus()
+  await page.keyboard.press('Tab')
+  await expect(add).toBeFocused()
+  await page.keyboard.press('Enter')
+  await expect(page).toHaveURL(/#\/cards\/nav\/activities\/new$/)
+  await page.getByRole('link', { name: '返回卡片', exact: true }).click()
+  await settings.focus()
+  await page.keyboard.press('Enter')
+  await expect(page).toHaveURL(/#\/cards\/nav\/edit$/)
+  page.once('dialog', dialog => dialog.accept())
+  await page.getByRole('button', { name: '封存卡片', exact: true }).click()
+  await expect(page).toHaveURL(/#\/cards\/nav$/)
+  await expect(page.getByText('已封存', { exact: true })).toBeVisible()
+  await expect(settings).toHaveCount(1)
+  await expect(add).toHaveCount(0)
+  await page.keyboard.press('Tab')
+  await settings.focus()
+  await expect(settings).toHaveCSS('outline-style', 'solid')
+  await page.keyboard.press('Enter')
+  await expect(page).toHaveURL(/#\/cards\/nav\/edit$/)
+  await expect(page.getByRole('button', { name: '恢復使用卡片', exact: true })).toBeVisible()
+})
+
+test('secondary actions have transparent defaults and retain interaction feedback', async ({ page }) => {
+  await page.clock.install({ time: new Date('2026-11-04T12:00:00+08:00') })
+  await seedNavigation(page)
+  for (const route of ['/', '/cards/nav', '/cards/nav/edit', '/settings']) {
+    await page.goto(`/#${route}`)
+    await page.mouse.move(0, 0)
+    if (route === '/cards/nav') await page.getByText('管理活動', { exact: true }).click()
+    const controls = page.locator('.text-button, .nav-link, .secondary')
+    expect(await controls.count()).toBeGreaterThan(0)
+    for (const control of await controls.all()) {
+      await expect(control).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)')
+    }
+    for (const primary of await page.locator('.primary').all()) {
+      await expect(primary).toHaveCSS('background-color', 'rgb(22, 112, 90)')
+    }
+    for (const danger of await page.locator('.text-button.danger').all()) {
+      await expect(danger).toHaveCSS('color', 'rgb(155, 66, 49)')
+    }
+    if (route === '/cards/nav') {
+      await expect(page.locator('.rate')).toHaveCSS('background-color', 'rgb(234, 243, 238)')
+    }
+  }
+  const nav = page.locator('.nav-link')
+  await nav.hover()
+  await expect(nav).toHaveCSS('background-color', 'rgb(232, 238, 234)')
+  await page.mouse.down()
+  await expect(nav).toHaveCSS('background-color', 'rgb(220, 228, 222)')
+  await page.mouse.up()
+  await page.goto('/#/cards/nav/edit')
+  const archive = page.getByRole('button', { name: '封存卡片', exact: true })
+  await page.keyboard.press('Tab')
+  await archive.focus()
+  await expect(archive).toHaveCSS('outline-style', 'solid')
+  await archive.hover()
+  await expect(archive).toHaveCSS('background-color', 'rgb(232, 238, 234)')
+  const remove = page.getByRole('button', { name: '刪除卡片', exact: true })
+  // Check the shared disabled presentation without starting a storage write.
+  await archive.evaluate(element => { (element as HTMLButtonElement).disabled = true })
+  await expect(archive).toBeDisabled()
+  await expect(archive).toHaveCSS('opacity', '0.6')
+  await expect(archive).toHaveCSS('cursor', 'not-allowed')
+  await expect(archive).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)')
+  await expect(remove).toHaveCount(0)
+  await page.goto('/#/cards/nav')
+  const deletePurchase = page.getByRole('button', { name: '刪除 2026-11-04 消費', exact: true })
+  await deletePurchase.hover()
+  await expect(deletePurchase).toHaveCSS('background-color', 'rgb(245, 224, 218)')
+  await page.mouse.down()
+  await expect(deletePurchase).toHaveCSS('background-color', 'rgb(238, 209, 200)')
+  await page.mouse.move(0, 0)
+  await page.mouse.up()
 })
 
 test('return confirmation preserves canceled drafts and discards confirmed drafts without saving', async ({ page }) => {
@@ -184,9 +289,19 @@ test('purchase form stays aligned and saves without floating over fields in crea
     await expect(page.locator('.activity-panel .amount')).toContainText(mode === 'create' ? '8,233' : '8,133')
     if (mode === 'create') await page.getByRole('link', { name: '編輯 2026-11-04 消費', exact: true }).click()
   }
-  for (const route of ['/cards/layout/edit', '/cards/layout/activities/bonus/edit']) {
+  for (const route of ['/cards/layout/edit', '/cards/layout/activities/new', '/cards/layout/activities/bonus/edit']) {
     await page.goto(`/#${route}`)
-    expect(await page.locator('.form-actions').evaluate(el => getComputedStyle(el).position)).toBe('sticky')
+    const isActivity = route.includes('/activities/')
+    expect(await page.locator('.form-actions').evaluate(el => getComputedStyle(el).position)).toBe(isActivity ? 'static' : 'sticky')
+    if (isActivity) {
+      const field = page.getByLabel('活動名稱', { exact: true })
+      await field.focus()
+      await field.scrollIntoViewIfNeeded()
+      const fieldBox = (await field.boundingBox())!
+      const saveBox = (await page.getByRole('button', { name: '儲存活動', exact: true }).boundingBox())!
+      expect(saveBox.y).toBeGreaterThanOrEqual(fieldBox.y + fieldBox.height)
+      await page.screenshot({ path: `.impeccable/review/activity-form-${route.endsWith('/new') ? 'create' : 'edit'}-390.png`, fullPage: true })
+    }
   }
   await page.goto('/#/cards/layout')
   expect(await page.locator('.mobile-action').evaluate(el => getComputedStyle(el).position)).toBe('sticky')

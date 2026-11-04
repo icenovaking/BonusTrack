@@ -22,7 +22,7 @@ svg { flex-shrink: 0; vertical-align: middle; }
 .nav-shell { max-width: 1168px; margin: auto; padding: 12px 32px; min-height: 88px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
 .brand { display: flex; align-items: center; gap: 11px; font-size: 1.25rem; font-weight: 750; letter-spacing: -.035em; min-height: 44px; }
 .brand-mark { width: 36px; height: 36px; display: grid; place-items: center; background: var(--accent); color: white; border-radius: 10px; }
-.nav-link { display: flex; align-items: center; gap: 8px; min-height: 44px; color: var(--accent); background: var(--tint); font-size: .875rem; padding: 0 8px; border-radius: 6px; }
+.nav-link { display: flex; align-items: center; gap: 8px; min-height: 44px; color: var(--accent); background: transparent; font-size: .875rem; padding: 0 8px; border-radius: 6px; }
 .nav-link:hover { background: var(--soft); }
 .nav-link:active { background: var(--line); }
 .shell { max-width: 1168px; margin: auto; padding: 48px 32px 72px; min-height: calc(100dvh - 88px); }
@@ -32,13 +32,12 @@ svg { flex-shrink: 0; vertical-align: middle; }
 .primary { background: var(--accent); color: white; }
 .primary:hover:not(:disabled) { background: var(--accent-hover); }
 .primary:active:not(:disabled) { background: #0a4938; }
-.secondary { background: var(--tint); border: 1px solid var(--line); color: var(--ink); }
+.secondary { background: transparent; border: 1px solid var(--line); color: var(--ink); }
 .secondary:hover:not(:disabled) { background: var(--soft); }
 .secondary:active:not(:disabled) { background: var(--line); }
-.text-button { display: inline-flex; gap: 5px; justify-content: center; align-items: center; min-height: 44px; padding: 6px 8px; background: var(--tint); color: var(--accent); font-size: .875rem; font-weight: 550; border-radius: 6px; transition: background-color 160ms ease-out; }
+.text-button { display: inline-flex; gap: 5px; justify-content: center; align-items: center; min-height: 44px; padding: 6px 8px; background: transparent; color: var(--accent); font-size: .875rem; font-weight: 550; border-radius: 6px; transition: background-color 160ms ease-out; }
 .text-button:hover:not(:disabled) { background: var(--soft); }
 .text-button:active:not(:disabled) { background: var(--line); }
-.text-button.danger { background: #fbefec; }
 .text-button.danger:hover:not(:disabled) { background: #f5e0da; }
 .text-button.danger:active:not(:disabled) { background: #eed1c8; }
 .danger { color: var(--danger); }
@@ -79,7 +78,6 @@ textarea { resize: vertical; }
 .title-row h1 { flex: 1; min-width: 0; text-align: left; }
 .back-link { flex-shrink: 0; white-space: nowrap; }
 .detail-heading { display: block; }
-.detail-heading > .button { margin-top: 16px; }
 .back-link:hover { color: var(--accent); }
 .form-page { max-width: 600px; margin: 0 auto; }
 .form-sheet { margin-top: 32px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 32px; display: grid; gap: 24px; }
@@ -110,6 +108,9 @@ fieldset > label:last-child:not(.radio-row) { margin-top: 16px; }
 .form-actions .button { width: 100%; }
 .section-heading { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin: 28px 0 12px; }
 .section-heading > .text-button { margin-left: auto; }
+.allowance-heading { flex-wrap: wrap; }
+.card-detail-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; margin-left: auto; max-width: 100%; }
+.card-detail-actions .text-button { white-space: nowrap; }
 .section-heading .muted { font-size: .8125rem; }
 .period-select { margin: 0 0 20px; max-width: 420px; font-weight: 400; }
 .detail-allowances { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
@@ -193,7 +194,7 @@ summary { min-height: 44px; padding: 10px 0; border-radius: 4px; }
   .period-select select { font-size: 1rem; }
   .section-heading { gap: 10px; flex-wrap: wrap; }
   .form-actions { position: sticky; bottom: 0; background: white; padding-bottom: env(safe-area-inset-bottom); }
-  .purchase-form .form-actions { position: static; }
+  .purchase-form .form-actions, .activity-form .form-actions { position: static; }
   .info-strip { padding: 16px; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; } }

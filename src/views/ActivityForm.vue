@@ -26,7 +26,7 @@ async function save() {
   <section class="form-page">
     <div class="title-row"><h1>{{ existing ? '編輯加碼活動' : '新增加碼活動' }}</h1><RouterLink class="text-button back-link" :to="`/cards/${cardId}`"><Icon name="back" />返回卡片</RouterLink></div>
     <p class="lead">{{ card?.name }}</p>
-    <form class="form-sheet" @submit.prevent="save" @input="dirty">
+    <form class="form-sheet activity-form" @submit.prevent="save" @input="dirty">
       <label>活動名稱<input v-model="name" required maxlength="100" placeholder="例如：日本指定商店" /></label>
       <label for="activity-note">備註（選填）<textarea id="activity-note" v-model="note" rows="3" aria-describedby="activity-note-help" /></label>
       <p id="activity-note-help" class="field-help activity-note-help">會顯示在首頁此活動下方</p>

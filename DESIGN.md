@@ -56,7 +56,7 @@ components:
   button-primary-hover:
     backgroundColor: "{colors.accent-hover}"
   button-secondary:
-    backgroundColor: "{colors.surface}"
+    backgroundColor: "transparent"
     textColor: "{colors.ink}"
     rounded: "{rounded.control}"
     padding: "10px 20px"
@@ -106,7 +106,7 @@ components:
 
 - `bg`：頁面底；`surface`：標頭、卡片、表單與輸入框。
 - `ink`：主要文字；`muted`：輔助文案、上限、期別與日期。
-- `tint`：輕量提示、標籤、次要按鈕 hover、試算區。
+- `tint`：輕量提示、標籤、試算區；次要操作的 hover 使用 soft。
 - `soft`：數量標記與載入骨架；`line`：容器描邊、項目分隔線。
 
 ### Semantic states
@@ -135,7 +135,7 @@ components:
 
 分組以 8px、16px、24px、32px 的重複間距為基礎，同時保留來源中依元件設定的 10px、12px、20px、22px 等值。標題與主動作可在手機換行。長標題與金額使用可換行策略，不以省略號隱藏關鍵資料。
 
-手機卡片詳情的新增動作使用底部 sticky 區，背景沿用頁面底並加入 `env(safe-area-inset-bottom)`。新增與編輯消費的儲存區採正常文件排版，位於期別與錯誤訊息之後，隨表單捲動並保留安全區留白，避免鍵盤開啟時浮在欄位上；其他表單維持既有配置。
+手機卡片詳情的新增動作使用底部 sticky 區，背景沿用頁面底並加入 `env(safe-area-inset-bottom)`。新增與編輯消費、加碼活動的儲存區採正常文件排版，位於表單內容與錯誤訊息之後，隨表單捲動並保留安全區留白，避免鍵盤開啟時浮在欄位上；其他表單維持既有配置。
 
 ## Elevation & Depth
 
@@ -151,7 +151,7 @@ components:
 
 ### Buttons
 
-主要按鈕使用綠底白字、8px 圓角、10px 20px padding、至少 48px 高；手機頁首動作的高度為 44px。Hover 轉深綠，active 再加深。次要按鈕白底、深字與細邊，hover 使用 tint；文字按鈕用綠字與透明底，至少 44px 高。
+主要按鈕使用綠底白字、8px 圓角、10px 20px padding、至少 48px 高；手機頁首動作的高度為 44px。Hover 轉深綠，active 再加深。次要按鈕使用透明底、深字與細邊；文字按鈕及頂部設定導覽使用透明底與綠字，刪除類文字操作使用紅字。次要與文字操作的 hover 使用 soft、active 使用 line；刪除操作的 hover／active 使用淡紅色暫時回饋，不保留常駐淡底色。文字按鈕至少 44px 高、6px 圓角、6px 8px padding。
 
 共用 focus-visible 樣式為 3px accent 外框與 4px offset。Disabled 降為 0.6 opacity，並使用不可操作游標。等待儲存時保留動作名稱並顯示「儲存中…」。
 
@@ -174,6 +174,8 @@ components:
 ### Navigation
 
 白色頂部標頭帶底部分隔線；品牌及備份入口保有至少 44px 互動高度。返回連結結合描線箭頭與四字短標籤，與頁面標題同列、垂直置中並靠右；卡片詳情與「新增活動」共用右側對齊邊界。區段動作在窄螢幕或放大文字下換行時，仍維持靠右對齊。長標題可換行，返回文字不拆行。頁面不設品牌或離線狀態頁尾；離線準備狀態集中於備份設定頁。重複導讀予以移除，保留必要的欄位規則及資料取代警告。跳至主要內容連結只在聚焦時顯示，應移動焦點而不改變 hash 路由。
+
+卡片詳情的「加碼額度」右側依序集中「卡片設定」、「新增活動」，兩者共用文字按鈕樣式，使用 edit／plus 圖示與 8px 群組間距。空間不足時整組移到下一列並靠右；群組本身也無法容納時依相同順序換行，單一標籤不拆字、不截斷。卡片設定只保留此單一入口；封存卡片仍提供設定並隱藏新增活動。
 
 ### Tags and feedback
 

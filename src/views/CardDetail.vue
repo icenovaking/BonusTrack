@@ -37,10 +37,9 @@ async function removePurchase(purchase: Purchase) { if (confirm(`刪除 ${purcha
     <div class="page-heading detail-heading">
       <div class="title-row"><h1>{{ card.name }}</h1><RouterLink class="text-button back-link" to="/"><Icon name="back" />我的卡片</RouterLink></div>
       <p v-if="card.archived" class="lead">已封存</p>
-      <RouterLink class="button secondary" :to="`/cards/${cardId}/edit`"><Icon name="edit" />卡片設定</RouterLink>
     </div>
     <p v-if="error" class="error" role="alert">{{ error }}</p>
-    <div class="section-heading"><h2>加碼額度</h2><RouterLink v-if="!card.archived" class="text-button" :to="`/cards/${cardId}/activities/new`"><Icon name="plus" />新增活動</RouterLink></div>
+    <div class="section-heading allowance-heading"><h2>加碼額度</h2><div class="card-detail-actions"><RouterLink class="text-button" :to="`/cards/${cardId}/edit`"><Icon name="edit" />卡片設定</RouterLink><RouterLink v-if="!card.archived" class="text-button" :to="`/cards/${cardId}/activities/new`"><Icon name="plus" />新增活動</RouterLink></div></div>
     <label class="period-select">查看期別<select :value="currentEnd" @change="chosenEnd = ($event.target as HTMLSelectElement).value"><option v-for="option in periodOptions" :key="option.end" :value="option.end">{{ periodLabel(option) }}</option></select></label>
     <div class="detail-allowances" v-if="activities.length">
       <section class="activity-panel" v-for="activity in activities" :key="activity.id">
