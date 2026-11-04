@@ -36,7 +36,7 @@ async function save() {
       <label class="amount-field">消費金額（台幣）<div class="money-input"><span>NT$</span><input v-model="amount" inputmode="decimal" required placeholder="0" autocomplete="off" aria-label="消費金額（台幣）" /></div></label>
       <label>消費日期<input type="date" v-model="spentOn" :max="state.today" min="1900-01-01" required /></label>
       <label>適用加碼活動<select v-model="activitySelection" required><option disabled value="">請選擇活動</option><option v-for="activity in activities" :key="activity.id" :value="`activity:${activity.id}`">{{ activity.name }} · +{{ activity.bonusRateBasisPoints / 100 }}%{{ activity.archived ? '（已封存）' : '' }}</option><option value="unassigned">不適用加碼</option></select><span class="field-help">每筆最多選一個活動，不適用加碼的消費不扣額度。</span></label>
-      <label>備註 <span class="optional">選填</span><input v-model="note" placeholder="例如：藥妝店、晚餐" maxlength="1000" /></label>
+      <label>備註（選填）<input v-model="note" placeholder="例如：藥妝店、晚餐" maxlength="1000" /></label>
       <details class="period-adjust"><summary>調整所屬期別</summary><p class="field-help">依消費日期自動歸期。若銀行列入前一期或下一期，可在此調整。</p><label>所屬期別<select v-model="offset"><option v-for="option in periods" :key="option.offset" :value="option.offset">{{ option.offset === 0 ? '自動' : option.offset === -1 ? '前一期' : '下一期' }} · {{ periodLabel(option.period) }}</option></select></label></details>
       <p class="field-help" v-if="periods.length">將記入：{{ periodLabel(resolvePeriod(card!, spentOn, offset)) }}</p>
       <p v-if="error" role="alert" class="error">{{ error }}</p>
