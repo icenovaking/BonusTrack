@@ -292,7 +292,9 @@ test('purchase form stays aligned and saves without floating over fields in crea
   for (const route of ['/cards/layout/edit', '/cards/layout/activities/new', '/cards/layout/activities/bonus/edit']) {
     await page.goto(`/#${route}`)
     const isActivity = route.includes('/activities/')
-    expect(await page.locator('.form-actions').evaluate(el => getComputedStyle(el).position)).toBe(isActivity ? 'static' : 'sticky')
+    const heading = isActivity ? route.endsWith('/new') ? '新增加碼活動' : '編輯加碼活動' : '卡片設定'
+    await expect(page.getByRole('heading', { name: heading, exact: true })).toBeVisible()
+    await expect(page.locator('.form-actions')).toHaveCSS('position', 'static')
     if (isActivity) {
       const field = page.getByLabel('活動名稱', { exact: true })
       await field.focus()

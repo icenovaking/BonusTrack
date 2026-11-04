@@ -68,6 +68,27 @@ Private repo 只限制原始碼 repository 的存取，不會把網站變成私�
 
 官方參考：[Vue 部署](https://developers.cloudflare.com/pages/framework-guides/deploy-a-vue-site/)、[GitHub 整合](https://developers.cloudflare.com/pages/configuration/git-integration/github-integration/)、[建置環境](https://developers.cloudflare.com/pages/configuration/build-image/)、[HTTP headers](https://developers.cloudflare.com/pages/configuration/headers/)。
 
+### 安全標頭
+
+安全標頭統一由 `public/_headers` 管理，Vite 建置後複製到 `dist/_headers`，Cloudflare Pages 會將規則套用到靜態回應。沿用上面的 Git 整合與 `dist` 發布設定即可，標準靜態 Pages 不需新增 Cloudflare 後台規則或 API token；仍需部署後檢查實際回應，不能只憑本機測試判定正式站已生效。
+
+政策限制腳本、樣式、圖片、字型、連線、Worker 與 manifest 為同源，禁止 inline script、eval、iframe 嵌入及網路表單提交，並設定 `X-Frame-Options: DENY`、`X-Content-Type-Options: nosniff`、`Referrer-Policy: no-referrer`。JSON blob 備份下載仍可使用。這些規則不提供登入或資料加密。
+
+本機帶標頭驗證方式：
+
+```powershell
+npm run build
+node scripts/security-preview.mjs
+```
+
+開啟 `http://localhost:4173`。這個僅供 loopback 測試的入口從 `dist/_headers` 讀取全域與精確路徑規則，缺檔、未支援語法、衝突或佔用埠都會失敗，不會改用其他埠。`npm run test:e2e` 也使用此入口；一般 `npm run preview` 與開發伺服器不會自動套用 Cloudflare `_headers`，不能拿來驗證標頭。
+
+安全標頭內容會參與 PWA 快取版本計算，避免只改標頭卻沿用舊 HTML 快取。既有裝置仍須保持連線並接受原有更新提示；更新前先保存表單，不必清除 IndexedDB。未完成更新的離線裝置不保證已取得新標頭。
+
+若 Cloudflare 額外注入 Web Analytics 等腳本被 CSP 阻擋，先記錄 blocked URI 與 directive，再決定保留服務或調整允許來源；不要直接加入萬用來源或 `unsafe-eval`。若已有其他回應標頭規則，核對最後實際值。Pages Functions／SSR 的動態回應不適用 `_headers`，必須另外設計。
+
+正式站檢查、回復方式及本次驗證範圍見 [安全標頭驗證紀錄](docs/verification/harden-security-headers.md)。
+
 ### 日常更新網站
 
 在 `main` 完成修改後，先確認本次檔案，再提交並推送：
