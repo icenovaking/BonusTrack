@@ -75,6 +75,7 @@ textarea { resize: vertical; }
 .back-link:hover { color: var(--accent); }
 .form-page { max-width: 600px; margin: 0 auto; }
 .form-sheet { margin-top: 32px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 32px; display: grid; gap: 24px; }
+.purchase-form { grid-template-columns: minmax(0, 1fr); }
 label { display: flex; flex-direction: column; gap: 9px; font-size: .875rem; font-weight: 550; min-width: 0; }
 input:not([type='radio']), select, textarea { width: 100%; min-width: 0; max-width: 100%; min-height: 48px; padding: 11px 13px; border: 1px solid #c4cfc9; border-radius: var(--control-radius); background: white; font-size: 1rem; color: var(--ink); caret-color: var(--accent); }
 input::placeholder { color: #6f7c75; }
@@ -183,6 +184,7 @@ summary { min-height: 44px; padding: 10px 0; border-radius: 4px; }
   .period-select select { font-size: 1rem; }
   .section-heading { gap: 10px; flex-wrap: wrap; }
   .form-actions { position: sticky; bottom: 0; background: white; padding-bottom: env(safe-area-inset-bottom); }
+  .purchase-form .form-actions { position: static; }
   .info-strip { padding: 16px; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; } }

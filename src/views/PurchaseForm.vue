@@ -32,7 +32,7 @@ async function save() {
   <section class="form-page">
     <RouterLink class="back-link" :to="`/cards/${cardId}`"><Icon name="back" />返回卡片</RouterLink>
     <h1>{{ existing ? '編輯消費' : '新增消費' }}</h1><p class="lead">{{ card?.name }} · 記錄已發生的消費。</p>
-    <form class="form-sheet" @submit.prevent="save" @input="dirty" @change="dirty">
+    <form class="form-sheet purchase-form" @submit.prevent="save" @input="dirty" @change="dirty">
       <label class="amount-field">消費金額（台幣）<div class="money-input"><span>NT$</span><input v-model="amount" inputmode="decimal" required placeholder="0" autocomplete="off" aria-label="消費金額（台幣）" /></div></label>
       <label>消費日期<input type="date" v-model="spentOn" :max="state.today" min="1900-01-01" required /></label>
       <label>適用加碼活動<select v-model="activitySelection" required><option disabled value="">請選擇活動</option><option v-for="activity in activities" :key="activity.id" :value="`activity:${activity.id}`">{{ activity.name }} · +{{ activity.bonusRateBasisPoints / 100 }}%{{ activity.archived ? '（已封存）' : '' }}</option><option value="unassigned">不適用加碼</option></select><span class="field-help">每筆最多選一個活動，不適用加碼的消費不扣額度。</span></label>
